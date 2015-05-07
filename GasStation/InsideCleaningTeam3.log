@@ -1,0 +1,21 @@
+13/04/2015 00:00:12: In InsideClean::InsideClean()
+13/04/2015 00:00:12: InsideCleaningTeam init ( id = 3 )
+13/04/2015 00:00:12: In InsideClean::run()
+13/04/2015 00:00:12: InsideCleaningTeam (id = 3) - started execution as a seperate thread
+13/04/2015 00:00:23: AutoCleaningTeam - car 222 Arrived
+13/04/2015 00:00:23: In InsideClean::serveCar() - inside clean car 222
+13/04/2015 00:00:23: In InsideClean::serveCar() - car  222 is being cleaned for 72 ms
+13/04/2015 00:00:23: In InsideClean::serveCar() - inside clean car 222 finished
+13/04/2015 00:01:33: AutoCleaningTeam - car 844 Arrived
+13/04/2015 00:01:33: In InsideClean::serveCar() - inside clean car 844
+13/04/2015 00:01:33: In InsideClean::serveCar() - car  844 is being cleaned for 68 ms
+13/04/2015 00:01:33: In InsideClean::serveCar() - inside clean car 844 finished
+13/04/2015 00:02:09: AutoCleaningTeam - car 136 Arrived
+13/04/2015 00:02:09: In InsideClean::serveCar() - inside clean car 136
+13/04/2015 00:02:09: In InsideClean::serveCar() - car  136 is being cleaned for 1 ms
+13/04/2015 00:02:09: In InsideClean::serveCar() - inside clean car 136 finished
+13/04/2015 00:02:29: AutoCleaningTeam - car 566 Arrived
+13/04/2015 00:02:29: In InsideClean::serveCar() - inside clean car 566
+13/04/2015 00:02:29: In InsideClean::serveCar() - car  566 is being cleaned for 97 ms
+13/04/2015 00:02:29: In InsideClean::serveCar() - inside clean car 566 finished
+13/04/2015 00:02:39: InsideCleaningTeam (id = 3) - finished execution as a seperate thread

@@ -1,0 +1,40 @@
+13/04/2015 00:00:12: In Pump::Pump()
+13/04/2015 00:00:12: Pump init (id=1)
+13/04/2015 00:00:12: In Pump::run()
+13/04/2015 00:00:12: In Pump::run() - pump number: 1 started running as a seperate thread
+13/04/2015 00:00:12: In Pump::refuel()
+13/04/2015 00:00:12: In Pump::refuel - car 333 wants to enter
+13/04/2015 00:00:12: In Pump::refuel - car 333 is in queue
+13/04/2015 00:00:12: In Pump::getNextCar() - car 333 is ready to be served
+13/04/2015 00:00:12: In Pump::run() - serving car 333
+13/04/2015 00:00:12: In Pump::serveCar()
+13/04/2015 00:00:12: In Pump::serveCar() - car 333 is being served
+13/04/2015 00:00:12: In Pump::serveCar() - car needs 42 litres
+13/04/2015 00:00:12: In Pump::serveCar() - car  333 is fueling for 262 ms
+13/04/2015 00:00:12: In Pump::refuel()
+13/04/2015 00:00:12: In Pump::refuel - car 444 wants to enter
+13/04/2015 00:00:12: In Pump::refuel - car 444 is in queue
+13/04/2015 00:00:13: In Pump::serveCar() - car  333 is fueled
+13/04/2015 00:00:13: In Pump::getNextCar() - car 444 is ready to be served
+13/04/2015 00:00:13: In Pump::run() - serving car 444
+13/04/2015 00:00:13: In Pump::serveCar()
+13/04/2015 00:00:13: In Pump::serveCar() - car 444 is being served
+13/04/2015 00:00:13: In Pump::serveCar() - car needs 35 litres
+13/04/2015 00:00:13: In Pump::serveCar() - car  444 is fueling for 263 ms
+13/04/2015 00:00:13: In Pump::serveCar() - car  444 is fueled
+13/04/2015 00:00:56: In Pump::updateMainPumpStartedFueling() - main pump fueling
+13/04/2015 00:00:56: In Pump::updateMainPumpFinishedFueling() - main pump finished fueling
+13/04/2015 00:01:14: In Pump::refuel()
+13/04/2015 00:01:14: In Pump::refuel - car 453 wants to enter
+13/04/2015 00:01:14: In Pump::refuel - car 453 is in queue
+13/04/2015 00:01:14: In Pump::getNextCar() - car 453 is ready to be served
+13/04/2015 00:01:14: In Pump::run() - serving car 453
+13/04/2015 00:01:14: In Pump::serveCar()
+13/04/2015 00:01:14: In Pump::serveCar() - car 453 is being served
+13/04/2015 00:01:14: In Pump::serveCar() - car needs 31 litres
+13/04/2015 00:01:14: In Pump::serveCar() - car  453 is fueling for 159 ms
+13/04/2015 00:01:14: In Pump::serveCar() - car  453 is fueled
+13/04/2015 00:02:26: In Pump::updateMainPumpStartedFueling() - main pump fueling
+13/04/2015 00:02:26: In Pump::updateMainPumpFinishedFueling() - main pump finished fueling
+13/04/2015 00:02:36: In Pump::closePump()
+13/04/2015 00:02:36: In Pump::run() - pump number: 1 is now closed

@@ -1,0 +1,20 @@
+13/04/2015 00:00:12: In Pump::Pump()
+13/04/2015 00:00:12: Pump init (id=3)
+13/04/2015 00:00:12: In Pump::run()
+13/04/2015 00:00:12: In Pump::run() - pump number: 3 started running as a seperate thread
+13/04/2015 00:00:56: In Pump::updateMainPumpStartedFueling() - main pump fueling
+13/04/2015 00:00:56: In Pump::updateMainPumpFinishedFueling() - main pump finished fueling
+13/04/2015 00:01:22: In Pump::refuel()
+13/04/2015 00:01:22: In Pump::refuel - car 844 wants to enter
+13/04/2015 00:01:22: In Pump::refuel - car 844 is in queue
+13/04/2015 00:01:22: In Pump::getNextCar() - car 844 is ready to be served
+13/04/2015 00:01:22: In Pump::run() - serving car 844
+13/04/2015 00:01:22: In Pump::serveCar()
+13/04/2015 00:01:22: In Pump::serveCar() - car 844 is being served
+13/04/2015 00:01:22: In Pump::serveCar() - car needs 5 litres
+13/04/2015 00:01:22: In Pump::serveCar() - car  844 is fueling for 26 ms
+13/04/2015 00:01:23: In Pump::serveCar() - car  844 is fueled
+13/04/2015 00:02:26: In Pump::updateMainPumpStartedFueling() - main pump fueling
+13/04/2015 00:02:26: In Pump::updateMainPumpFinishedFueling() - main pump finished fueling
+13/04/2015 00:02:36: In Pump::closePump()
+13/04/2015 00:02:36: In Pump::run() - pump number: 3 is now closed
