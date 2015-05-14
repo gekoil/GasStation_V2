@@ -1,9 +1,0 @@
-13/04/2015 00:00:12: In InsideClean::InsideClean()
-13/04/2015 00:00:12: InsideCleaningTeam init ( id = 2 )
-13/04/2015 00:00:12: In InsideClean::run()
-13/04/2015 00:00:12: InsideCleaningTeam (id = 2) - started execution as a seperate thread
-13/04/2015 00:00:23: AutoCleaningTeam - car 111 Arrived
-13/04/2015 00:00:23: In InsideClean::serveCar() - inside clean car 111
-13/04/2015 00:00:23: In InsideClean::serveCar() - car  111 is being cleaned for 22 ms
-13/04/2015 00:00:23: In InsideClean::serveCar() - inside clean car 111 finished
-13/04/2015 00:02:39: InsideCleaningTeam (id = 2) - finished execution as a seperate thread
