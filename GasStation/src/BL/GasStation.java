@@ -1,13 +1,13 @@
 package BL;
 
+import UI.GasStationUI;
+
 import java.io.IOException;
 import java.util.Observable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-
-import UI.GasStationUI;
 
 // GasStation is Observable since it fires the "less than 20%" event
 // GasSupplier listens on the event and fills the MainFuelPool on fire
@@ -45,9 +45,7 @@ public class GasStation extends Observable {
 			this.handler.setFilter(new MyObjectFilter(this));
 			GasStation.getLog().addHandler(this.handler);
 			GasStation.getLog().setUseParentHandlers(false);
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (SecurityException | IOException e) {
 			e.printStackTrace();
 		}
 		// the GasSupplier is the observer which fills the MainPool up on less than 20% event
@@ -91,7 +89,7 @@ public class GasStation extends Observable {
 		statistics.setNumOfCarsFueledUp(statistics.getNumOfCarsFueledUp() + 1);
 		statistics.setFuelProfit(statistics.getFuelProfit() + pricePerLiter * car.getNumOfLiters());
 		// if less than 20% and isn't filling the fuel pool currently, raise an event
-		if (mfpool.getMaxCapacity() / mfpool.getMaxCapacity() < 0.2) {
+		if (mfpool.getCurrentCapacity() / mfpool.getMaxCapacity() < 0.2) {
 			if (!isFillingMainFuelPool()) {
 				fireFillUPMainFuelPoolEvent();
 			}
@@ -123,7 +121,7 @@ public class GasStation extends Observable {
 		// enter the manual-cleaning process and lock the object
 		int num_of_team_to_occupy = 0;
 		while (true) {
-			if (cs.getManualClean()[num_of_team_to_occupy].isLocked() == false) {
+			if (!cs.getManualClean()[num_of_team_to_occupy].isLocked()) {
 				cs.getManualClean()[num_of_team_to_occupy].manualClean(car, cs, this);
 				car.setCleanedUp(true);
 				break;
@@ -157,71 +155,91 @@ public class GasStation extends Observable {
 	public GasSupplier getSupplier() {
 		return supplier;
 	}
+
 	public void setSupplier(GasSupplier supplier) {
 		this.supplier = supplier;
 	}
+
 	public Statistics getStatistics() {
 		return statistics;
 	}
+
 	public void setStatistics(Statistics statistics) {
 		this.statistics = statistics;
 	}
+
 	public boolean isGasStationClosing() {
 		return gasStationClosing;
 	}
+
 	public void setGasStationClosing(boolean gasStationClosing) {
 		this.gasStationClosing = gasStationClosing;
 	}
+
 	public Pump[] getPumps() {
 		return pumps;
 	}
+
 	public void setPumps(Pump[] pumps) {
 		this.pumps = pumps;
 	}
+
 	public CleaningService getCs() {
 		return cs;
 	}
+
 	public void setCs(CleaningService cs) {
 		this.cs = cs;
 	}
+
 	public static Logger getLog() {
 		return LOG;
 	}
+
 	public int getNumOfCarsFuelingUpCurrently() {
 		return numOfCarsFuelingUpCurrently;
 	}
+
 	public void setNumOfCarsFuelingUpCurrently(int numOfCarsFuelingUpCurrently) {
 		this.numOfCarsFuelingUpCurrently = numOfCarsFuelingUpCurrently;
 	}
+
 	public boolean isFillingMainFuelPool() {
 		return isFillingMainFuelPool;
 	}
+
 	public void setFillingMainFuelPool(boolean isFillingMainFuelPool) {
 		this.isFillingMainFuelPool = isFillingMainFuelPool;
 	}
+
 	public MainFuelPool getMfpool() {
 		return mfpool;
 	}
+
 	public void setMfpool(MainFuelPool mfpool) {
 		this.mfpool = mfpool;
 	}
+
 	public int getNumOfCarsInTheGasStationCurrently() {
 		return numOfCarsInTheGasStationCurrently;
 	}
+
 	public void setNumOfCarsInTheGasStationCurrently(
 			int numOfCarsInTheGasStationCurrently) {
 		this.numOfCarsInTheGasStationCurrently = numOfCarsInTheGasStationCurrently;
 	}
+
 	public double getPricePerLiter() {
 		return pricePerLiter;
 	}
+
 	public void setPricePerLiter(double pricePerLiter) {
 		this.pricePerLiter = pricePerLiter;
 	}
+
 	@Override
 	public String toString() {
 		return "GasStation [numOfPumps=" + numOfPumps + ", pricePerLiter="
 				+ pricePerLiter + ", mfpool=" + mfpool + ", cs=" + cs + "]";
 	}
-	
 }  // GasStation

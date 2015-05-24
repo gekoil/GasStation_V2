@@ -1,9 +1,10 @@
 package BL;
 
+import UI.GasStationUI;
+import Annotations.DuringWash;
+
 import java.io.IOException;
 import java.util.logging.FileHandler;
-
-import UI.GasStationUI;
 
 // Car as a thread enters the GasStation, holds the locks (Pump/AutoClean/ManualClean)
 // and performs the needed operations in the relevant classes
@@ -16,7 +17,7 @@ public class Car implements Runnable {
 	private boolean fueledUp;
 	private boolean cleanedUp;
 	private FileHandler handler;
-	
+
 	public Car(int id, boolean wantCleaning, int numOfLiters, int pumpNum, GasStation gs) {
 		this.id = id;
 		this.wantCleaning = wantCleaning;
@@ -25,24 +26,24 @@ public class Car implements Runnable {
 		this.gs = gs;
 		fueledUp = false;
 		cleanedUp = false;
-		
+
 		try {
-			this.handler = new FileHandler("Car_ID"+this.id+" Log.txt"); 
-			this.handler.setFormatter(new MyFormat());						
+			this.handler = new FileHandler("Car_ID"+this.id+" Log.txt");
+			this.handler.setFormatter(new MyFormat());
 			this.handler.setFilter(new MyObjectFilter(this));
-			GasStation.getLog().addHandler(this.handler);		
+			GasStation.getLog().addHandler(this.handler);
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}	
+		}
 	}
 
 	public void run() {
 		try {
 			while ((!cleanedUp || !fueledUp) && !gs.isGasStationClosing()) {
-				if (!fueledUp && numOfLiters > 0) 
-					gs.fuelUp(this);		
+				if (!fueledUp && numOfLiters > 0)
+					gs.fuelUp(this);
 				if (!cleanedUp && wantCleaning)
 					gs.cleanCar(this);
 			}
@@ -64,40 +65,67 @@ public class Car implements Runnable {
 	public int getID() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public boolean isWantCleaning() {
 		return wantCleaning;
 	}
+
 	public void setWantCleaning(boolean wantCleaning) {
 		this.wantCleaning = wantCleaning;
 	}
+
 	public int getNumOfLiters() {
 		return numOfLiters;
 	}
-	public void setNumOfLiters(int numOfLiters) {
+
+    public void setNumOfLiters(int numOfLiters) {
 		this.numOfLiters = numOfLiters;
 	}
-	public int getPumpNum() {
+
+    public int getPumpNum() {
 		return pumpNum;
 	}
-	public void setPumpNum(int pumpNum) {
+
+    public void setPumpNum(int pumpNum) {
 		this.pumpNum = pumpNum;
 	}
-	public boolean isFueledUp() {
+
+    public boolean isFueledUp() {
 		return fueledUp;
 	}
-	public void setFueledUp(boolean fueledUp) {
+
+    public void setFueledUp(boolean fueledUp) {
 		this.fueledUp = fueledUp;
 	}
-	public boolean isCleanedUp() {
+
+    public boolean isCleanedUp() {
 		return cleanedUp;
 	}
-	public void setCleanedUp(boolean cleanedUp) {
+
+    public void setCleanedUp(boolean cleanedUp) {
 		this.cleanedUp = cleanedUp;
 	}
-	@Override
+
+    @DuringWash
+    public void readPaper() {
+        System.out.println("Car #" + id + " is reading the paper");
+    }
+
+    @DuringWash
+    public void playGame() {
+        System.out.println("Car #" + id + " is playing a game");
+    }
+
+    @DuringWash
+    public void talkOnPhone() {
+        System.out.println("Car #" + id + " is talking on the phone");
+    }
+
+    @Override
 	public String toString() {
 		return "Car [id=" + id + ", wantCleaning=" + wantCleaning
 				+ ", numOfLiters=" + numOfLiters + ", pumpNum=" + pumpNum + "]";
