@@ -1,0 +1,27 @@
+@CHARSET "windows-1255";
+
+.root {
+	-fx-background-color: green;
+}
+
+.label {
+	-fx-font-size: 16px;
+	-fx-text-fill: #ffffff;
+	-fx-font-weight: bold;
+	-fx-text-alignment: CENTER;
+}
+
+.button:hover {
+	-fx-color: blue;
+	-fx-text-size: 13px;
+}
+
+#statisTxtArea {
+	-fx-font-size: 12px;
+	-fx-pref-column-count: 20;
+	-fx-pref-row-count: 6;
+}
+
+#mainFuelBox {
+	-fx-border-color: black;
+}
