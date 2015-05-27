@@ -1,55 +1,146 @@
 
-
-
+import BL.Car;
+import BL.CleaningService;
 import BL.GasStation;
-import Listeners.MainFuelAbstractListener;
-import UI.FuelPanel;
-import UI.Statistics;
-import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.scene.Node;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import BL.MainFuelPool;
 
-public class Program extends Application {
-	
-	private GasStation gs;
-	private Pane fuelPane;
-	private Pane stat;
-	
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+
+import java.io.File;
+import java.util.Scanner;
+
+public class Program {
+
 	public static void main(String[] args) {
-		launch(args);
-	}
+		// XML DOM-parsed values
+		try {
+			// reading data from the XML file
+			File inputFile = new File("input.txt");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(inputFile);
+			doc.getDocumentElement().normalize();
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		BorderPane border = new BorderPane();
-		Scene scene = new Scene(border);
-		scene.getStylesheets().add(Program.class
-				.getResource("Style.css").toExternalForm());
-		
-		primaryStage.setMinHeight(500);
-		primaryStage.setMinWidth(600);
-		
-		fuelPane = new FuelPanel();
-		fuelPane.setId("mainFuelBox");
-		stat = new Statistics();
-		border.setTop(new Label(""));
-		border.setBottom((Node) fuelPane);
-		border.setCenter(stat);
-		
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
+			NodeList root = doc.getChildNodes();
+			GasStation gs = getGasStationXML(root);
+			Node gasStationNode = getNode("GasStation", root);
+			Car[] cars = getCarsXML(gasStationNode, gs);
+
+			// inserting the cars(threads) into the gas station
+			for (int i = 0; i < cars.length; i++) {
+				gs.enterGasStation(cars[i]);
+			}
+			System.out.println(cars.length
+					+ " cars from the XML file entered the gas station!");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			
+		}
+	} // main
 	
-	public MainFuelAbstractListener getMainFuelPane() {
-		return (MainFuelAbstractListener) fuelPane;
-	}
+	// these functions are for XML data parsing
+	private static Node getNode(String tagName, NodeList nodes) {
+	    for (int i = 0; i < nodes.getLength(); i++) {
+	        Node node = nodes.item(i);
+	        if (node.getNodeName().equalsIgnoreCase(tagName)) {
+	            return node;
+	        }
+	    }
+	    return null;
+	}  // getNode
+	
+	private static String getNodeAttr(String attrName, Node node) {
+	    NamedNodeMap attrs = node.getAttributes();
+	    for (int i = 0; i < attrs.getLength(); i++ ) {
+	        Node attr = attrs.item(i);
+	        if (attr.getNodeName().equalsIgnoreCase(attrName)) {
+	            return attr.getNodeValue();
+	        }
+	    }
+	    return "";
+	}  // getNodeAttr
+	
+	private static GasStation getGasStationXML(NodeList root) {	
+		// getting the GasStation Node
+		Node gasStationNode = getNode("GasStation", root);
+		String numOfPumpsString = getNodeAttr("numOfPumps", gasStationNode);
+		int numOfPumps = Integer.parseInt(numOfPumpsString);
+		//System.out.print("numOfPumps: " + numOfPumps + "   ");
+		String pricePerLiterString = getNodeAttr("pricePerLiter",
+				gasStationNode);
+		double pricePerLiter = Double.parseDouble(pricePerLiterString);
+		//System.out.println("pricePerLiter: " + pricePerLiter);
 
-}
+		// getting the MainFuelPool Node
+		Node mainFuelPoolNode = getNode("MainFuelPool",gasStationNode.getChildNodes());
+		String maxCapacityString = getNodeAttr("maxCapacity", mainFuelPoolNode);
+		int maxCapacity = Integer.parseInt(maxCapacityString);
+		//System.out.print("maxCapacity: " + maxCapacity + "   ");
+		String currentCapacityString = getNodeAttr("currentCapacity",
+				mainFuelPoolNode);
+		int currentCapacity = Integer.parseInt(currentCapacityString);
+		//System.out.println("currentCapacity: " + currentCapacity);
+
+		// getting the CleaningService Node
+		Node cleaningServiceNode = getNode("CleaningService",gasStationNode.getChildNodes());
+		String numOfTeamsString = getNodeAttr("numOfTeams", cleaningServiceNode);
+		int numOfTeams = Integer.parseInt(numOfTeamsString);
+		//System.out.print("numOfTeams: " + numOfTeams + "   ");
+		String priceString = getNodeAttr("price", cleaningServiceNode);
+		int price = Integer.parseInt(priceString);
+		//System.out.print("price: " + price + "   ");
+		String secondsPerAutoCleanString = getNodeAttr("secondsPerAutoClean", cleaningServiceNode);
+		int secondsPerAutoClean = Integer.parseInt(secondsPerAutoCleanString);
+		//System.out.println("secondsPerAutoClean: " + secondsPerAutoClean);
+
+		MainFuelPool pool = new MainFuelPool(maxCapacity, currentCapacity);
+		CleaningService cs = new CleaningService(numOfTeams ,price, secondsPerAutoClean);
+		GasStation gs = new GasStation(numOfPumps, pricePerLiter, pool, cs);
+		return gs;
+	}  // getGasStationXML
+	
+	private static Car[] getCarsXML(Node gasStationNode, GasStation gs) {
+		Car[] cars = null;
+		// getting the Cars Node
+		Node carsNode = getNode("Cars", gasStationNode.getChildNodes());
+		Element el = (Element) carsNode;
+		// getting the Cars List
+		//System.out.println("Cars List:");
+		NodeList carsList = el.getElementsByTagName("Car");
+		cars = new Car[carsList.getLength()];
+		for (int i = 0; i < carsList.getLength(); i++) {
+			// getting the Car node
+			Node carNode = carsList.item(i);
+			String idString = getNodeAttr("id", carNode);
+			int id = Integer.parseInt(idString);
+			//System.out.print("Car ID: " + id + "   ");
+			String wantCleaningString = getNodeAttr("wantCleaning", carNode);
+			boolean wantCleaning = Boolean.parseBoolean(wantCleaningString);
+			//System.out.print("wantCleaning: " + wantCleaning + "   ");
+
+			// getting the wantsFuel Node
+			Node wantsFuelNode = getNode("WantsFuel", carNode.getChildNodes());
+			if (wantsFuelNode != null) {
+				String numOfLitersString = getNodeAttr("numOfLiters", wantsFuelNode);
+				int numOfLiters = Integer.parseInt(numOfLitersString);
+				//System.out.print("numOfLiters: " + numOfLiters + "   ");
+				String pumpNumString = getNodeAttr("pumpNum", wantsFuelNode);
+				int pumpNum = Integer.parseInt(pumpNumString);
+				//System.out.println("pumpNum: " + pumpNum);
+				cars[i] = new Car(id, wantCleaning, numOfLiters, pumpNum, gs);
+			} else {
+				//System.out.println();
+				cars[i] = new Car(id, wantCleaning, 0, -1, gs);
+			}
+		}  // for-loop
+		return cars;
+	} // getCarsXML
+
+}  // Program
