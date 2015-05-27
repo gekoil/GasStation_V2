@@ -17,7 +17,7 @@ public class FuelPanel extends Pane implements MainFuelAbstractListener {
 	
 	public FuelPanel() {
 		Label headLine = new Label("Main Fuel");
-		needFuel = new Label();
+		needFuel = new Label("");
 		Button refillBtn = new Button("Refill tank");
 		BorderPane mainFuel = new BorderPane();
 		mainFuel.setTop(headLine);

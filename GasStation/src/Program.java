@@ -34,7 +34,9 @@ public class Program extends Application {
 	public void start(Stage stage) throws Exception {
 		FlowPane headPane = new FlowPane(Orientation.VERTICAL);
 		Pane statistics = new UIStatistics();
+		statistics.setId("statisTxtArea");
 		headPane.getChildren().add(statistics);
+		fuelPane.setId("mainFuelBox");
 		headPane.getChildren().add(fuelPane);
 		Scene scene = new Scene(headPane, 400, 300);
 		scene.getStylesheets().add(Program.class
