@@ -1,26 +1,57 @@
 
+import java.io.File;
+import java.util.Scanner;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import BL.Car;
 import BL.CleaningService;
 import BL.GasStation;
 import BL.MainFuelPool;
+import Controller.FuelController;
+import Listeners.MainFuelAbstractListener;
+import UI.FuelPanel;
+import UI.UIStatistics;
+import javafx.application.Application;
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
+public class Program extends Application {
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
+	private static FuelPanel fuelPane = new FuelPanel();
 
-import java.io.File;
-import java.util.Scanner;
-
-public class Program {
-
+	@Override
+	public void start(Stage stage) throws Exception {
+		FlowPane headPane = new FlowPane(Orientation.VERTICAL);
+		Pane statistics = new UIStatistics();
+		headPane.getChildren().add(statistics);
+		headPane.getChildren().add(fuelPane);
+		Scene scene = new Scene(headPane, 400, 300);
+		scene.getStylesheets().add(Program.class
+				.getResource("/UI/Style.css").toExternalForm());
+		
+		stage.setScene(scene);
+		stage.show();
+	}
+	
+	private static MainFuelAbstractListener getFuelView() {
+		return fuelPane;
+	}
+	
 	public static void main(String[] args) {
 		// XML DOM-parsed values
 		try {
+			Scanner in = new Scanner(System.in);
 			// reading data from the XML file
 			File inputFile = new File("input.txt");
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -39,6 +70,8 @@ public class Program {
 			}
 			System.out.println(cars.length
 					+ " cars from the XML file entered the gas station!");
+			FuelController fuelCtrl = new FuelController(gs, getFuelView());
+			launch(args);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			
@@ -143,4 +176,4 @@ public class Program {
 		return cars;
 	} // getCarsXML
 
-}  // Program
+}

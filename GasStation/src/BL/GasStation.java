@@ -249,7 +249,6 @@ public class GasStation extends Observable {
 	}
 	
 	public void addFuelPoolListener(MainFuelEventListener lis) {
-		System.out.println("add obs");
 		fuelPoolListeners.add(lis);
 	}
 	

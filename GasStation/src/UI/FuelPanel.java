@@ -1,6 +1,7 @@
 package UI;
 
 import Listeners.MainFuelAbstractListener;
+import javafx.application.Application;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -32,7 +33,8 @@ public class FuelPanel extends Pane implements MainFuelAbstractListener {
 
 	@Override
 	public void updateTheMainFuelIsLow() {
-		needFuel.setText("The \"Main fuel pool\" is low! ");
+		needFuel.setText("The Main fuel pool is low! ");
+		System.out.println("here");
 	}
 
 }

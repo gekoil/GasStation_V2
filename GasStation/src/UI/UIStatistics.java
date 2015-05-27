@@ -7,9 +7,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
 
-public class Statistics extends FlowPane {
+public class UIStatistics extends FlowPane {
 	
-	public Statistics() {
+	public UIStatistics() {
 		setOrientation(Orientation.VERTICAL);
 		TextArea stat = new TextArea("Statistics");
 		stat.setId("statisTxtArea");
