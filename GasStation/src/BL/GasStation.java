@@ -1,9 +1,11 @@
 package BL;
 
+import Listeners.MainFuelEventListener;
 import UI.GasStationUI;
 
 import java.io.IOException;
 import java.util.Observable;
+import java.util.Vector;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
@@ -14,6 +16,7 @@ import java.util.logging.Logger;
 public class GasStation extends Observable {
 	private static final Logger LOG = Logger.getLogger("Gas_Station Logger");
 	private FileHandler handler;
+	private Vector<MainFuelEventListener> fuelPoolListeners;
 	private int numOfPumps;
 	private double pricePerLiter;
 	private Pump[] pumps;
@@ -31,6 +34,7 @@ public class GasStation extends Observable {
 	private int numOfCarsInTheGasStationCurrently;
 	
 	public GasStation(int numOfPumps, double pricePerLiter, MainFuelPool mfpool, CleaningService cs) {
+		this.fuelPoolListeners = new Vector<MainFuelEventListener>();
 		this.numOfPumps = numOfPumps;
 		this.pricePerLiter = pricePerLiter;
 		this.pumps = new Pump[numOfPumps];
@@ -92,6 +96,7 @@ public class GasStation extends Observable {
 		if (mfpool.getCurrentCapacity() / mfpool.getMaxCapacity() < 0.2) {
 			if (!isFillingMainFuelPool()) {
 				fireFillUPMainFuelPoolEvent();
+				fireFillUPMainFuelEvent();
 			}
 		}
 	}  // fuelUp
@@ -101,7 +106,7 @@ public class GasStation extends Observable {
 	    super.notifyObservers(this);
 	}  // fireFillUPMainFuelPoolEvent
 	
-	public void cleanCar(Car car) {
+		public void cleanCar(Car car) {
 		// continueToManualClean can be false in case, when the GasStation is closing and
 		// the car didn't pass the AutoClean! So the car shouldn't pass CleanService at all,
 		// if it hasn't begun with the process
@@ -242,4 +247,15 @@ public class GasStation extends Observable {
 		return "GasStation [numOfPumps=" + numOfPumps + ", pricePerLiter="
 				+ pricePerLiter + ", mfpool=" + mfpool + ", cs=" + cs + "]";
 	}
+	
+	public void addFuelPoolListener(MainFuelEventListener lis) {
+		System.out.println("add obs");
+		fuelPoolListeners.add(lis);
+	}
+	
+	public void fireFillUPMainFuelEvent() {
+		for(MainFuelEventListener l : fuelPoolListeners)
+			l.theMainFuelIsLow();
+	}
+	
 }  // GasStation
