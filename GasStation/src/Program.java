@@ -1,16 +1,4 @@
 
-import java.io.File;
-import java.util.Scanner;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import BL.Car;
 import BL.CleaningService;
 import BL.GasStation;
@@ -25,10 +13,16 @@ import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
+import java.util.Scanner;
 
 public class Program extends Application {
 
-	private static FuelPanel fuelPane = new FuelPanel();
+	private static FuelPanel fuelPane;
 
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -52,6 +46,7 @@ public class Program extends Application {
 	
 	public static void main(String[] args) {
 		// XML DOM-parsed values
+		fuelPane = new FuelPanel();
 		try {
 			Scanner in = new Scanner(System.in);
 			// reading data from the XML file

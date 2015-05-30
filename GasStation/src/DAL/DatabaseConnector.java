@@ -46,12 +46,12 @@ public class DatabaseConnector {
             Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
             String query;
-            if (transaction.getType() == ServiceType.FUEL) {
+            if (transaction.type == ServiceType.FUEL) {
                 query = String.format("INSERT INTO transactions (STATION_ID, AMOUNT, TIME_STAMP, TYPE, PUMP) VALUES (%s, %s, %s,%s, %s)",
-                        transaction.getGasStation(), transaction.getAmount(), transaction.getTimeStamp(), transaction.getType().ordinal(), transaction.getPump());
+                        transaction.gasStation, transaction.amount, transaction.timeStamp, transaction.type.ordinal(), transaction.pump);
             } else { // cleaning service
                 query = String.format("INSERT INTO transactions (AMOUNT, TIME_STAMP, TYPE) VALUES (%s, %s, %s,%s)",
-                        transaction.getGasStation(), transaction.getAmount(), transaction.getTimeStamp(), transaction.getType().ordinal());
+                        transaction.gasStation, transaction.amount, transaction.timeStamp, transaction.type.ordinal());
             }
 
             int rowCount = statement.executeUpdate(query);

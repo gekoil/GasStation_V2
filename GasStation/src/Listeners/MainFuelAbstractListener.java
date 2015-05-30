@@ -1,6 +1,6 @@
 package Listeners;
 
 public interface MainFuelAbstractListener {
-	void theMainFuelCapacitys(int liters);
+	void theMainFuelCapacities(int liters);
 	void updateTheMainFuelIsLow();
 }

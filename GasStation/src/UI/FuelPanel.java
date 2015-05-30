@@ -1,14 +1,10 @@
 package UI;
 
 import Listeners.MainFuelAbstractListener;
-import javafx.application.Application;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 
 public class FuelPanel extends Pane implements MainFuelAbstractListener {
@@ -16,6 +12,7 @@ public class FuelPanel extends Pane implements MainFuelAbstractListener {
 	private Label needFuel;
 	
 	public FuelPanel() {
+		new JFXPanel(); // needed to initialize JavaFX toolkit
 		Label headLine = new Label("Main Fuel");
 		needFuel = new Label("");
 		Button refillBtn = new Button("Refill tank");
@@ -27,7 +24,7 @@ public class FuelPanel extends Pane implements MainFuelAbstractListener {
 	}
 
 	@Override
-	public void theMainFuelCapacitys(int liters) {
+	public void theMainFuelCapacities(int liters) {
 		needFuel.setText("The \"Main fuel pool\" capacity is " + liters + ".");
 	}
 
