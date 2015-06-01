@@ -1,4 +1,5 @@
 
+
 import BL.CreateGsFromXML;
 import BL.GasStation;
 import Controller.GasStationController;
@@ -7,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-
 import Listeners.MainFuelAbstractListener;
 import UI.FuelPane;
 import UI.UIStatistics;
@@ -16,6 +16,7 @@ import UI.UIStatistics;
 public class Program extends Application {
 	
 	private static FuelPane fuelPane;
+	private final String BILD_DATA = "/UploadData/input.xml";
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -23,7 +24,7 @@ public class Program extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		CreateGsFromXML creator = new CreateGsFromXML();
+		CreateGsFromXML creator = new CreateGsFromXML(BILD_DATA);
 		GasStation gs = creator.CreatGasStation();
 		primaryStage.setScene(creatScene());
 		
