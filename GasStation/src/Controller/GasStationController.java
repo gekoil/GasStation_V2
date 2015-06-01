@@ -4,12 +4,12 @@ import BL.GasStation;
 import Listeners.MainFuelAbstractListener;
 import Listeners.MainFuelEventListener;
 
-public class FuelController implements MainFuelEventListener {
+public class GasStationController implements MainFuelEventListener {
 	
 	private GasStation gs;
 	private MainFuelAbstractListener view;
 	
-	public FuelController(GasStation gs, MainFuelAbstractListener view) {
+	public GasStationController(GasStation gs, MainFuelAbstractListener view) {
 		this.gs = gs;
 		this.view = view;
 		
