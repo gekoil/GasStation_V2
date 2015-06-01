@@ -1,0 +1,71 @@
+package UI;
+
+import java.awt.Checkbox;
+
+import com.sun.prism.paint.Color;
+import com.sun.prism.shader.FillCircle_Color_Loader;
+
+import Listeners.UICarCreatorListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+
+public class CarCreatorPane extends GridPane {
+	
+	private Label fuelLbl;
+	private Label washLbl;
+	private Label pumpLbl;
+	private TextField fuelField;
+	private CheckBox washCbx;
+	private ChoiceBox pumpCb;
+	private Button submitBtn;
+	//private HBox fuelBox;
+	//private HBox washBox;
+	//private HBox pumpBox;
+	private UICarCreatorListener listener;
+	
+	public CarCreatorPane(int pumps) {
+		//top, right, bottom, and left
+		setPadding(new Insets(30, 30, 30, 30));
+		setHgap(10);
+		setVgap(10);
+		
+		fuelLbl = new Label("Fuel Amount:");
+		add(fuelLbl, 0, 1);
+		fuelField = new TextField("Liters");
+		add(fuelField, 1, 1);
+		
+		washLbl = new Label("Need Wash:");
+		add(washLbl, 0, 2);
+		washCbx = new CheckBox();
+		add(washCbx, 1, 2);
+		
+		pumpLbl = new Label("Pump Number:");
+		int[] array = new int[pumps];
+		pumpCb = new ChoiceBox();
+		for(int i = 0; i < pumps; i++)
+			pumpCb.getItems().add(i+1);
+		pumpCb.setTooltip(new Tooltip("Choose The Pump Number."));
+		//pumpCb.setId("PumpCombo");
+		add(pumpLbl, 0, 3);
+		add(pumpCb, 1, 3);
+		
+		submitBtn = new Button("Submit");
+		add(submitBtn, 0, 4);
+		setVisible(true);
+	}
+	
+}

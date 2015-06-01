@@ -1,21 +1,26 @@
 package Controller;
 
+import BL.Car;
 import BL.GasStation;
 import Listeners.MainFuelEventListener;
 import Listeners.StatisticEventListener;
+import Listeners.UICarCreatorListener;
 import Listeners.UIFuelEventListener;
 import Listeners.UIStatisticsListener;
 import Views.MainFuelAbstractView;
 import Views.StatisticsAbstractView;
 
 public class GasStationController implements MainFuelEventListener,
-		UIFuelEventListener, StatisticEventListener, UIStatisticsListener {
+		UIFuelEventListener, StatisticEventListener, UIStatisticsListener,
+		UICarCreatorListener {
 
+	private static int carId_generator = 9000;
 	private GasStation gs;
 	private MainFuelAbstractView fuelView;
 	private StatisticsAbstractView statisticView;
 
-	public GasStationController(GasStation gs, MainFuelAbstractView Fuelview, StatisticsAbstractView statisticView) {
+	public GasStationController(GasStation gs, MainFuelAbstractView Fuelview,
+			StatisticsAbstractView statisticView) {
 		this.gs = gs;
 		this.fuelView = Fuelview;
 		this.statisticView = statisticView;
@@ -50,7 +55,7 @@ public class GasStationController implements MainFuelEventListener,
 
 	@Override
 	public void theMainFuelIsLow(int liters) {
-		if(!gs.isFillingMainFuelPool())
+		if (!gs.isFillingMainFuelPool())
 			fuelView.updateTheMainFuelIsLow(liters);
 	}
 
@@ -93,7 +98,14 @@ public class GasStationController implements MainFuelEventListener,
 	@Override
 	public void getCorrentCapacity() {
 		fuelView.updateMainFuelCapacities(gs.getMfpool().getCurrentCapacity());
-		
+
+	}
+
+	@Override
+	public void createNewCar(int liters, boolean wash) {
+		int pumpNum = gs.getPumps().length;
+		pumpNum = (int)(Math.random()*pumpNum);
+		Car c = new Car(carId_generator++, wash, liters, pumpNum, gs);
 	}
 
 }
