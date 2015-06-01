@@ -36,11 +36,9 @@
 }
 
 #FuelControl {
-	-fx-alignment: center-left;
+	-fx-alignment: center;
 	-fx-background-color: #004080;
 	-fx-text-color: #ff0000;
 	-fx-padding: 5px;
-}
-#PumpCombo {
-	-fx-background-color: #004080;
+	-fx-spacing: 5px;
 }

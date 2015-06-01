@@ -60,7 +60,6 @@ public class CarCreatorPane extends GridPane {
 			pumpCmb.getItems().add(i);
 		pumpCmb.setValue(1);
 		pumpCmb.setTooltip(new Tooltip("Choose The Pump Number."));
-		//pumpCb.setId("PumpCombo");
 		add(pumpLbl, 0, 3);
 		add(pumpCmb, 1, 3);
 		

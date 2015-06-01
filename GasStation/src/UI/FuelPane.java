@@ -22,6 +22,7 @@ import javafx.scene.layout.StackPane;
 
 public class FuelPane extends StackPane implements  MainFuelAbstractView {
 	
+	private Label headline;
 	private Label fuelStatus;
 	private Pane centerPane;
 	private Button refillBtn;
@@ -29,14 +30,15 @@ public class FuelPane extends StackPane implements  MainFuelAbstractView {
 	private UIFuelEventListener listener;
 	
 	public FuelPane() {
-		Label headLine = new Label("MAIN FUEL POOL");
+		headline = new Label("MAIN FUEL POOL");
 		fuelStatus = new Label("");
 		setTheCenter();
-		BorderPane mainFuel = new BorderPane();
-		mainFuel.setTop(headLine);
-		mainFuel.setCenter(centerPane);
-		mainFuel.setBottom(fuelStatus);
-		getChildren().add(mainFuel);
+		BorderPane mainBorder = new BorderPane();
+		mainBorder.setAlignment(headline, Pos.CENTER);
+		mainBorder.setTop(headline);
+		mainBorder.setCenter(centerPane);
+		mainBorder.setBottom(fuelStatus);
+		getChildren().add(mainBorder);
 	}
 	
 	private void setTheCenter() {
