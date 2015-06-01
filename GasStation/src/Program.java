@@ -9,9 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import Listeners.MainFuelAbstractView;
 import UI.FuelPane;
 import UI.UIStatistics;
+import Views.MainFuelAbstractView;
 
 
 public class Program extends Application {

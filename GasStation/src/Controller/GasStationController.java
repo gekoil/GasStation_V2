@@ -1,12 +1,12 @@
 package Controller;
 
 import BL.GasStation;
-import Listeners.MainFuelAbstractView;
 import Listeners.MainFuelEventListener;
 import Listeners.StatisticEventListener;
-import Listeners.StatisticsAbstractView;
 import Listeners.UIFuelEventListener;
 import Listeners.UIStatisticsListener;
+import Views.MainFuelAbstractView;
+import Views.StatisticsAbstractView;
 
 public class GasStationController implements MainFuelEventListener,
 		UIFuelEventListener, StatisticEventListener, UIStatisticsListener {

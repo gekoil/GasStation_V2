@@ -1,4 +1,6 @@
-package Listeners;
+package Views;
+
+import Listeners.UIFuelEventListener;
 
 public interface MainFuelAbstractView {
 	void registerListener(UIFuelEventListener lis);

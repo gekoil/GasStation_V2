@@ -1,4 +1,6 @@
-package Listeners;
+package Views;
+
+import Listeners.UIStatisticsListener;
 
 public interface StatisticsAbstractView {
 	void registerListener(UIStatisticsListener lis);

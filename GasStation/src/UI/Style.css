@@ -14,20 +14,19 @@
 .button {
 	-fx-color: #808080;
 	-fx-text-size: 13px;
+	-fx-padding: 5px;
 }
 
 .button:hover {
 	-fx-color: #0000ff;
-	-fx-text-size: 13px;
 }
 
 .button:pressed {
 	-fx-color: #ffffff;
-	-fx-text-size: 13px;
 }
 
 #statisTxtArea {
-	-fx-font-size: 12px;
+	-fx-font-size: 14px;
 	-fx-pref-column-count: 20;
 	-fx-pref-row-count: 6;
 }
@@ -40,5 +39,5 @@
 	-fx-alignment: center-left;
 	-fx-background-color: #004080;
 	-fx-text-color: #ff0000;
-	-fx-spaced: 10px;
+	-fx-padding: 5px;
 }

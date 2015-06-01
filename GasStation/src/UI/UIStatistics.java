@@ -2,8 +2,8 @@ package UI;
 
 import java.util.LinkedList;
 
-import Listeners.StatisticsAbstractView;
 import Listeners.UIStatisticsListener;
+import Views.StatisticsAbstractView;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;

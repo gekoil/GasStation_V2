@@ -2,8 +2,8 @@ package UI;
 
 import java.util.LinkedList;
 
-import Listeners.MainFuelAbstractView;
 import Listeners.UIFuelEventListener;
+import Views.MainFuelAbstractView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
