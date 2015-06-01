@@ -30,7 +30,7 @@ public class CarCreatorPane extends GridPane {
 	private Label pumpLbl;
 	private TextField fuelField;
 	private CheckBox washCbx;
-	private ChoiceBox pumpCb;
+	private ComboBox<Integer> pumpCmb;
 	private Button submitBtn;
 	//private HBox fuelBox;
 	//private HBox washBox;
@@ -55,13 +55,14 @@ public class CarCreatorPane extends GridPane {
 		
 		pumpLbl = new Label("Pump Number:");
 		int[] array = new int[pumps];
-		pumpCb = new ChoiceBox();
-		for(int i = 0; i < pumps; i++)
-			pumpCb.getItems().add(i+1);
-		pumpCb.setTooltip(new Tooltip("Choose The Pump Number."));
+		pumpCmb = new ComboBox<Integer>();
+		for(int i = 1; i <= pumps; i++)
+			pumpCmb.getItems().add(i);
+		pumpCmb.setValue(1);
+		pumpCmb.setTooltip(new Tooltip("Choose The Pump Number."));
 		//pumpCb.setId("PumpCombo");
 		add(pumpLbl, 0, 3);
-		add(pumpCb, 1, 3);
+		add(pumpCmb, 1, 3);
 		
 		submitBtn = new Button("Submit");
 		add(submitBtn, 0, 4);
