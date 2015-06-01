@@ -16,7 +16,7 @@ import UI.UIStatistics;
 public class Program extends Application {
 	
 	private static FuelPane fuelPane;
-	private final String BILD_DATA = "/UploadData/input.xml";
+	private final String BILD_DATA = "input.xml";
 	
 	public static void main(String[] args) {
 		launch(args);

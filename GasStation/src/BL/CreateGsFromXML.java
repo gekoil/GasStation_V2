@@ -27,7 +27,7 @@ public class CreateGsFromXML {
 				try {
 					Scanner in = new Scanner(System.in);
 					// reading data from the XML file
-					File inputFile = new File("FILE_NAME");
+					File inputFile = new File(FILE_NAME);
 					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 					Document doc = dBuilder.parse(inputFile);
