@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class GasStation extends Observable {
 	private static final Logger LOG = Logger.getLogger("Gas_Station Logger");
 	private FileHandler handler;
-	private Vector<MainFuelEventListener> fuelPoolListeners;
+	private Vector<MainFuelEventListener> MainFuelListeners;
 	private int numOfPumps;
 	private double pricePerLiter;
 	private Pump[] pumps;
@@ -34,7 +34,7 @@ public class GasStation extends Observable {
 	private int numOfCarsInTheGasStationCurrently;
 	
 	public GasStation(int numOfPumps, double pricePerLiter, MainFuelPool mfpool, CleaningService cs) {
-		this.fuelPoolListeners = new Vector<MainFuelEventListener>();
+		this.MainFuelListeners = new Vector<MainFuelEventListener>();
 		this.numOfPumps = numOfPumps;
 		this.pricePerLiter = pricePerLiter;
 		this.pumps = new Pump[numOfPumps];
@@ -57,7 +57,9 @@ public class GasStation extends Observable {
 		numOfCarsFuelingUpCurrently = 0;
 		numOfCarsInTheGasStationCurrently = 0;
 		GasStationUI.currentFuelState(mfpool.getCurrentCapacity(), this);
+		fireTheMainFuelPoolCapacity();
 	}
+	
 	public void enterGasStation(Car car) {
 		gasStationQueue.execute(car);  
 		numOfCarsInTheGasStationCurrently++;
@@ -78,6 +80,7 @@ public class GasStation extends Observable {
 				// waiting until the MainFuelPool is filled up
 				 do {
 					try {
+						fireFillingTheMainFuel();
 						pumps[car.getPumpNum() - 1].lock();
 						pumps[car.getPumpNum() - 1].getIsEligibleToFuelUp().await();
 						pumps[car.getPumpNum() - 1].unlock();
@@ -93,10 +96,9 @@ public class GasStation extends Observable {
 		statistics.setNumOfCarsFueledUp(statistics.getNumOfCarsFueledUp() + 1);
 		statistics.setFuelProfit(statistics.getFuelProfit() + pricePerLiter * car.getNumOfLiters());
 		// if less than 20% and isn't filling the fuel pool currently, raise an event
-		if (mfpool.getCurrentCapacity() / mfpool.getMaxCapacity() < 0.2) {
+		if (mfpool.getCurrentCapacity() < mfpool.getMaxCapacity()*0.2) {
 			if (!isFillingMainFuelPool()) {
 				fireFillUPMainFuelPoolEvent();
-				fireFillUPMainFuelEvent();
 			}
 		}
 	}  // fuelUp
@@ -249,12 +251,32 @@ public class GasStation extends Observable {
 	}
 	
 	public void addFuelPoolListener(MainFuelEventListener lis) {
-		fuelPoolListeners.add(lis);
+		MainFuelListeners.add(lis);
 	}
 	
-	public void fireFillUPMainFuelEvent() {
-		for(MainFuelEventListener l : fuelPoolListeners)
-			l.theMainFuelIsLow();
+	protected void fireFillUPMainFuelEvent() {
+		for(MainFuelEventListener l : MainFuelListeners)
+			l.theMainFuelIsLow(mfpool.getCurrentCapacity());
+	}
+	
+	protected void finishedFillTheMainFuel() {
+		for(MainFuelEventListener l : MainFuelListeners)
+			l.finishedFillTheMainFuel(mfpool.getCurrentCapacity());
+	}
+	
+	protected void fireFillingTheMainFuel() {
+		for(MainFuelEventListener l : MainFuelListeners)
+			l.fireFillingTheMainFuel();
+	}
+	
+	protected void fireTheMainFuelIsFull() {
+		for(MainFuelEventListener l : MainFuelListeners)
+			l.fireTheMainFuelIsFull();
+	}
+	
+	public void fireTheMainFuelPoolCapacity() {
+		for(MainFuelEventListener l : MainFuelListeners)
+			l.fireTheCorrentCapacity(mfpool.getCurrentCapacity());
 	}
 	
 }  // GasStation

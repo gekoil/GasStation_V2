@@ -11,8 +11,18 @@
 	-fx-text-alignment: CENTER;
 }
 
+.button {
+	-fx-color: #808080;
+	-fx-text-size: 13px;
+}
+
 .button:hover {
-	-fx-color: blue;
+	-fx-color: #0000ff;
+	-fx-text-size: 13px;
+}
+
+.button:pressed {
+	-fx-color: #ffffff;
 	-fx-text-size: 13px;
 }
 
@@ -23,5 +33,12 @@
 }
 
 #mainFuelBox {
-	-fx-border-color: black;
+	-fx-border-color: #000000;
+}
+
+#FuelControl {
+	-fx-alignment: center-left;
+	-fx-background-color: #004080;
+	-fx-text-color: #ff0000;
+	-fx-spaced: 10px;
 }

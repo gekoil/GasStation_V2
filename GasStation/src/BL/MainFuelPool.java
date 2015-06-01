@@ -23,6 +23,7 @@ public class MainFuelPool extends ReentrantLock {
 			numOfLitersToFill = this.getMaxCapacity() - this.getCurrentCapacity();
 		if (numOfLitersToFill == 0) {
 			GasStationUI.mainFuelPoolIsFull(gs);
+			gs.fireTheMainFuelIsFull();
 			return;
 		}
 		while(gs.getNumOfCarsFuelingUpCurrently() > 0) {
@@ -37,6 +38,7 @@ public class MainFuelPool extends ReentrantLock {
 		}
 		waitingToFillMainPool = false;
 		gs.setFillingMainFuelPool(true);
+		gs.fireFillingTheMainFuel();
 		// if numOfLitersToFill exceeds the max capacity, throw an exception
 		if (numOfLitersToFill + getCurrentCapacity() > getMaxCapacity())
 			throw new RuntimeException("The number of liters you are trying to fill, exceeds the maximum fuel pool capacity!");
@@ -49,6 +51,7 @@ public class MainFuelPool extends ReentrantLock {
 		}
 		setCurrentCapacity(getCurrentCapacity() + numOfLitersToFill);
 		gs.setFillingMainFuelPool(false);
+		gs.finishedFillTheMainFuel();
 		// notify all the threads, that are waiting to fuel up
 		for (int i = 0; i < gs.getPumps().length; i++) {
 			gs.getPumps()[i].lock();
@@ -57,6 +60,8 @@ public class MainFuelPool extends ReentrantLock {
 		}
 		GasStationUI.finishedFillingUpTheMainFuelPool(gs);
 		GasStationUI.currentFuelState(getCurrentCapacity(), gs);
+		gs.fireTheMainFuelPoolCapacity();
+		
 	}  // fillMainFuelPool
 	
 	public boolean isWaitingToFillMainPool() {

@@ -26,7 +26,7 @@ public class GasStationUI {
 	public static void emptyFuelPool(Car car, Object param) {
 		//System.out.println("Car #" + car.getID() + " tries to fuel up while the main pool has less fuel than the car needs.");
 		GasStation.getLog().log(Level.INFO, "Car #" + car.getID() + " tries to fuel up while the main pool has less fuel than the car needs.", param);
-	}  
+	}
 
 	public static void currentFuelState(int currentCapacity, Object param) {
 		GasStation.getLog().log(Level.INFO, "Liters in the main pool: " + currentCapacity, param);

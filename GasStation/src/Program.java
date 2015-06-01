@@ -4,11 +4,12 @@ import BL.CreateGsFromXML;
 import BL.GasStation;
 import Controller.GasStationController;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import Listeners.MainFuelAbstractListener;
+import Listeners.MainFuelAbstractView;
 import UI.FuelPane;
 import UI.UIStatistics;
 
@@ -16,6 +17,8 @@ import UI.UIStatistics;
 public class Program extends Application {
 	
 	private static FuelPane fuelPane;
+	private Label headline;
+	private static UIStatistics stat;
 	private final String BILD_DATA = "input.xml";
 	
 	public static void main(String[] args) {
@@ -28,7 +31,7 @@ public class Program extends Application {
 		GasStation gs = creator.CreatGasStation();
 		primaryStage.setScene(creatScene());
 		
-		GasStationController fuelCtrl = new GasStationController(gs, fuelPane);
+		GasStationController fuelCtrl = new GasStationController(gs, fuelPane, stat);
 		
 		primaryStage.setMinHeight(500);
 		primaryStage.setMinWidth(600);
@@ -42,8 +45,10 @@ public class Program extends Application {
 		
 		fuelPane = new FuelPane();
 		fuelPane.setId("mainFuelBox");
-		UIStatistics stat = new UIStatistics();
-		border.setTop(new Label(""));
+		stat = new UIStatistics();
+		headline = new Label("WELCOME TO THE GAS STATION");
+		border.setAlignment(headline, Pos.CENTER);
+		border.setTop(headline);
 		border.setBottom(fuelPane);
 		border.setCenter(stat);
 		return scene;
