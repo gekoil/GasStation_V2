@@ -7,6 +7,7 @@ import Listeners.StatisticEventListener;
 import Listeners.UICarCreatorListener;
 import Listeners.UIFuelEventListener;
 import Listeners.UIStatisticsListener;
+import Views.CarCreatorAbstractView;
 import Views.MainFuelAbstractView;
 import Views.StatisticsAbstractView;
 
@@ -18,15 +19,19 @@ public class GasStationController implements MainFuelEventListener,
 	private GasStation gs;
 	private MainFuelAbstractView fuelView;
 	private StatisticsAbstractView statisticView;
+	private CarCreatorAbstractView carView;
 
-	public GasStationController(GasStation gs, MainFuelAbstractView Fuelview,
-			StatisticsAbstractView statisticView) {
+	public GasStationController(GasStation gs, MainFuelAbstractView FuelView,
+			StatisticsAbstractView statisticView, CarCreatorAbstractView carView) {
 		this.gs = gs;
-		this.fuelView = Fuelview;
+		this.fuelView = FuelView;
 		this.statisticView = statisticView;
+		this.carView = carView;
 		this.gs.addFuelPoolListener(this);
+		this.gs.addStatisticsListener(this);
 		this.fuelView.registerListener(this);
 		this.statisticView.registerListener(this);
+		this.carView.registerListener(this);
 	}
 
 	public GasStation getGs() {
@@ -102,10 +107,36 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public void createNewCar(int liters, boolean wash) {
-		int pumpNum = gs.getPumps().length;
-		pumpNum = (int)(Math.random()*pumpNum);
-		Car c = new Car(carId_generator++, wash, liters, pumpNum, gs);
+	public void createNewCar(int liters, boolean wash, int pump) {
+		if(liters > gs.getMfpool().getMaxCapacity()) {
+			carView.updateErrorMessege("The amount fuel requested is to high!");
+			return;
+		}
+		if(liters < 0)
+			liters = 0;
+		Car c = new Car(carId_generator++, wash, liters, pump, gs);
+		try {
+			gs.enterGasStation(c);
+			carView.updateConfirmMessege("You Successfully create new car.");
+		} catch (Exception e) {
+			carView.updateErrorMessege(e.getMessage());
+		}
+	}
+
+	@Override
+	public void closeGasStation() {
+		gs.closeGasStation();
+		if(gs.isGasStationClosing()) {
+			ShowStatistics("Start closing operation...\nPlease wait for \"end of day\" statistics.");
+			statisticView.setDisable();
+			fuelView.setDisable();
+			carView.setDisable();
+		}
+	}
+
+	@Override
+	public void fireCantCloseWhileFilling() {
+		statisticView.setStatistics("The gas station can't be closed\nwhile filling the main fuel pool.");
 	}
 
 }

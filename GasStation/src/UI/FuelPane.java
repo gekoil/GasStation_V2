@@ -48,7 +48,6 @@ public class FuelPane extends StackPane implements  MainFuelAbstractView {
 		refillBtn = new Button("REFILL THE MAIN POOL");
 		refillBtn.setDisable(true);
 		refillBtn.setOnAction(new EventHandler<ActionEvent>() {
-			
 			@Override
 			public void handle(ActionEvent arg0) {
 				listener.refill();
@@ -121,6 +120,16 @@ public class FuelPane extends StackPane implements  MainFuelAbstractView {
             public void run() {
             	fuelStatus.setText("Filling up the Main Fuel Pool!");
             	refillBtn.setDisable(true);
+            }
+        });
+	}
+
+	@Override
+	public void setDisable() {
+		Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+            	setDisable(true);
             }
         });
 	}

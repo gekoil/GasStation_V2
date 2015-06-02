@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import Listeners.UIStatisticsListener;
 import Views.StatisticsAbstractView;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -14,13 +15,15 @@ import javafx.scene.layout.FlowPane;
 
 public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 	
-	private LinkedList<UIStatisticsListener> listeners;
+	private UIStatisticsListener listener;
 	private TextArea stat;
 	private Button infoBtn;
+	private Button closeBtn;
 	
 	public UIStatistics() {
-		listeners = new LinkedList<UIStatisticsListener>();
 		setOrientation(Orientation.VERTICAL);
+		setHgap(15);
+		setVgap(10);
 		stat = new TextArea("Statistics");
 		stat.setId("statisTxtArea");
 		stat.setScrollLeft(0);
@@ -29,17 +32,29 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 
 			@Override
 			public void handle(Event arg0) {
-				for(UIStatisticsListener l : listeners)
-					l.getStatistics();
+				listener.getStatistics();
+			}
+		});
+		closeBtn = new Button("Close Station");
+		closeBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						listener.closeGasStation();
+					}
+				});
 			}
 		});
 		getChildren().add(stat);
 		getChildren().add(infoBtn);
+		getChildren().add(closeBtn);
 	}
 
 	@Override
 	public void registerListener(UIStatisticsListener lis) {
-		listeners.add(lis);
+		listener = lis;
 	}
 
 	@Override
@@ -50,7 +65,17 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 				stat.setText(info);
 			}
 		});
-		
+	}
+
+	@Override
+	public void setDisable() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				infoBtn.setDisable(true);
+				closeBtn.setDisable(true);
+			}
+		});
 	}
 
 }

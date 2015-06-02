@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import UI.CarCreatorPane;
@@ -18,14 +19,14 @@ import UI.FuelPane;
 import UI.UIStatistics;
 import Views.MainFuelAbstractView;
 
-
 public class Program extends Application {
 	
 	private GasStation gs;
 	private static FuelPane fuelPane;
 	private static CarCreatorPane carPane;
-	private Label headline;
+	private Text headline;
 	private static UIStatistics stat;
+	GasStationController fuelCtrl;
 	private final String BILD_DATA = "input.xml";
 	
 	public static void main(String[] args) {
@@ -39,7 +40,7 @@ public class Program extends Application {
 		primaryStage.setScene(creatScene());
 		primaryStage.setTitle("Gas Station");
 		
-		GasStationController fuelCtrl = new GasStationController(gs, fuelPane, stat);
+		fuelCtrl = new GasStationController(gs, fuelPane, stat, carPane);
 		
 		primaryStage.setMinHeight(500);
 		primaryStage.setMinWidth(600);
@@ -54,7 +55,8 @@ public class Program extends Application {
 		fuelPane = new FuelPane();
 		fuelPane.setId("mainFuelBox");
 		stat = new UIStatistics();
-		headline = new Label("WELCOME TO THE GAS STATION");
+		headline = new Text("WELCOME TO THE GAS STATION");
+		headline.setId("headline");
 		carPane = new CarCreatorPane(gs.getPumps().length);
 		
 		border.setAlignment(headline, Pos.CENTER);

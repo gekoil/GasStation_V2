@@ -1,6 +1,7 @@
 package BL;
 
 import Listeners.MainFuelEventListener;
+import Listeners.StatisticEventListener;
 import UI.GasStationUI;
 
 import java.io.IOException;
@@ -11,12 +12,15 @@ import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
+import com.mysql.jdbc.UpdatableResultSet;
+
 // GasStation is Observable since it fires the "less than 20%" event
 // GasSupplier listens on the event and fills the MainFuelPool on fire
 public class GasStation extends Observable {
 	private static final Logger LOG = Logger.getLogger("Gas_Station Logger");
 	private FileHandler handler;
 	private Vector<MainFuelEventListener> MainFuelListeners;
+	private Vector<StatisticEventListener> statisticsListeners;
 	private int numOfPumps;
 	private double pricePerLiter;
 	private Pump[] pumps;
@@ -35,6 +39,7 @@ public class GasStation extends Observable {
 	
 	public GasStation(int numOfPumps, double pricePerLiter, MainFuelPool mfpool, CleaningService cs) {
 		this.MainFuelListeners = new Vector<MainFuelEventListener>();
+		this.statisticsListeners = new Vector<StatisticEventListener>();
 		this.numOfPumps = numOfPumps;
 		this.pricePerLiter = pricePerLiter;
 		this.pumps = new Pump[numOfPumps];
@@ -146,6 +151,7 @@ public class GasStation extends Observable {
 		// can't close the gas station while filling up the main fuel pool
 		if (isFillingMainFuelPool) {
 			GasStationUI.cantCloseWhileFillingMainPool(this);
+			fireCantCloseWhileFilling();
 			return;
 		}
 		gasStationClosing = true;
@@ -156,6 +162,7 @@ public class GasStation extends Observable {
 		    GasStationUI.statWillBeShown(this);
 		else {
 		    GasStationUI.showStatistics(this, this);
+		    updateStatistics();
 		}
 	}  // closeGasStation
 	
@@ -254,6 +261,10 @@ public class GasStation extends Observable {
 		MainFuelListeners.add(lis);
 	}
 	
+	public void addStatisticsListener(StatisticEventListener lis) {
+		statisticsListeners.add(lis);
+	}
+	
 	protected void fireFillUPMainFuelEvent() {
 		for(MainFuelEventListener l : MainFuelListeners)
 			l.theMainFuelIsLow(mfpool.getCurrentCapacity());
@@ -274,9 +285,20 @@ public class GasStation extends Observable {
 			l.fireTheMainFuelIsFull();
 	}
 	
-	public void fireTheMainFuelPoolCapacity() {
+	protected void fireTheMainFuelPoolCapacity() {
 		for(MainFuelEventListener l : MainFuelListeners)
 			l.fireTheCorrentCapacity(mfpool.getCurrentCapacity());
+	}
+	
+	protected void fireCantCloseWhileFilling() {
+		for(MainFuelEventListener l : MainFuelListeners)
+			l.fireCantCloseWhileFilling();
+	}
+	
+	protected void updateStatistics() {
+		System.out.println("here");
+		for(StatisticEventListener l : statisticsListeners)
+			l.ShowStatistics(statistics.toString());
 	}
 	
 }  // GasStation

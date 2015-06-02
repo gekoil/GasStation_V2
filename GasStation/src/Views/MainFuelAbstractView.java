@@ -9,4 +9,5 @@ public interface MainFuelAbstractView {
 	void updateTheMainFuelIsFull();
 	void updateFinishedFillingMainFuel(int liters);
 	void updateFillingTheMainFuel();
+	void setDisable();
 }

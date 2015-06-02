@@ -12,7 +12,7 @@
 }
 
 .button {
-	-fx-color: #808080;
+	-fx-background-color: linear-gradient(#2A5058, #61a2b1);
 	-fx-text-size: 13px;
 	-fx-padding: 5px;
 }
@@ -23,6 +23,13 @@
 
 .button:pressed {
 	-fx-color: #ffffff;
+}
+
+#headline {
+	-fx-font-size: 40px;
+	-fx-fill: #808080;
+	-fx-stroke: #ffffff;
+    -fx-stroke-width: 1;
 }
 
 #statisTxtArea {
@@ -38,7 +45,17 @@
 #FuelControl {
 	-fx-alignment: center;
 	-fx-background-color: #004080;
-	-fx-text-color: #ff0000;
 	-fx-padding: 5px;
 	-fx-spacing: 5px;
+}
+#errorText{
+	-fx-font: 15px Castellar;
+	-fx-stroke: red;
+    -fx-stroke-width: 1;
+	
+}
+#confirmText {
+	-fx-font: 15px Castellar;
+	-fx-stroke: #ffffff;
+    -fx-stroke-width: 1;
 }
