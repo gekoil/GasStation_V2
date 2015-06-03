@@ -1,4 +1,4 @@
-package Listeners;
+package Client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 
 import BL.ClientCar;
-import Client.ClientListener;
+import Listeners.ClientListener;
 
 public class Client {
 	
