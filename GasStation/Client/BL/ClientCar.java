@@ -21,12 +21,12 @@ public class ClientCar implements Serializable {
 		this.status = "";
 	}
 
-	public static int getCounter() {
-		return counter;
+	public int getId() {
+		return id;
 	}
 
-	public static void setCounter(int counter) {
-		ClientCar.counter = counter;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public boolean isNeedWash() {

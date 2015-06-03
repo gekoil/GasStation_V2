@@ -16,9 +16,14 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import BL.ClientCar;
+import View.AbstractUIView;
+
 import com.sun.javafx.collections.SetListenerHelper;
 
 public class MainFrame {
+	
+	private CarRegisterUI register;
 
 	private static JTabbedPane createContentPane() {
 		JTabbedPane tabedPane = new JTabbedPane();
@@ -67,4 +72,5 @@ public class MainFrame {
 			}
 		});
 	}
+	
 }
