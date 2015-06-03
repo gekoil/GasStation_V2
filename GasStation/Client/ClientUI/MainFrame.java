@@ -17,7 +17,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import BL.ClientCar;
-import View.AbstractUIView;
+import View.AbstractCarsView;
 
 import com.sun.javafx.collections.SetListenerHelper;
 

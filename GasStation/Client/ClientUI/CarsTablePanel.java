@@ -15,9 +15,9 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import BL.ClientCar;
-import View.AbstractUIView;
+import View.AbstractCarsView;
 
-public class CarsTablePanel extends JPanel implements AbstractUIView {
+public class CarsTablePanel extends JPanel implements AbstractCarsView {
 	
 	private JTable carTbl;
 	private DefaultTableModel model;
