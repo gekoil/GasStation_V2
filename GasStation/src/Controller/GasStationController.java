@@ -2,21 +2,28 @@ package Controller;
 
 import BL.Car;
 import BL.GasStation;
-import Listeners.MainFuelEventListener;
-import Listeners.StatisticEventListener;
-import Listeners.UICarCreatorListener;
-import Listeners.UIFuelEventListener;
-import Listeners.UIStatisticsListener;
+import DAL.DatabaseConnector;
+import Listeners.*;
 import Views.CarCreatorAbstractView;
 import Views.MainFuelAbstractView;
 import Views.StatisticsAbstractView;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class GasStationController implements MainFuelEventListener,
 		UIFuelEventListener, StatisticEventListener, UIStatisticsListener,
 		UICarCreatorListener {
 
 	private static int carId_generator = 9000;
+	private static int SERVER_PORT = 9090;
+
+	private boolean serverRunning = true;
 	private GasStation gs;
+	private DatabaseConnector dbConnector;
 	private MainFuelAbstractView fuelView;
 	private StatisticsAbstractView statisticView;
 	private CarCreatorAbstractView carView;
@@ -32,6 +39,40 @@ public class GasStationController implements MainFuelEventListener,
 		this.fuelView.registerListener(this);
 		this.statisticView.registerListener(this);
 		this.carView.registerListener(this);
+		this.dbConnector = DatabaseConnector.getInstance();
+		this.dbConnector = DatabaseConnector.getInstance();
+		Runnable runnable = new Runnable() {
+			@Override
+			public void run() {
+				initServer();
+			}
+		};
+		new Thread(runnable).start();
+	}
+
+	private void initServer() {
+		try {
+			ServerSocket listener = new ServerSocket(SERVER_PORT);
+			while (serverRunning) {
+				final Socket client = listener.accept();
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							ObjectInputStream input  = new ObjectInputStream(client.getInputStream());
+							ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
+							client.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+			}
+			listener.close();
+
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public GasStation getGs() {
@@ -132,6 +173,7 @@ public class GasStationController implements MainFuelEventListener,
 			fuelView.setDisable();
 			carView.setDisable();
 		}
+		serverRunning = false;
 	}
 
 	@Override

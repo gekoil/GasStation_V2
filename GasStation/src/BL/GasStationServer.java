@@ -1,6 +1,4 @@
-package BL;/**
- * Created by Jack on 02/06/2015.
- */
+package BL;
 
 import Controller.GasStationController;
 import UI.CarCreatorPane;
