@@ -3,8 +3,12 @@ package DAL;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.Vector;
 
 public class DatabaseConnector {
 
@@ -61,5 +65,24 @@ public class DatabaseConnector {
             e.printStackTrace();
             return false;
         }
+    }
+    
+    public Vector<?> getTransactions(String first, String last, boolean pump) {
+        try {
+            Connection connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            Vector<Transaction> t = new Vector<>();
+            
+            ResultSet set = statement.executeQuery("SELECT * FROM transactions WHERE TIME_STAMP > " + first + " AND TIME_STAMP < " + last);
+            while (set.next()) {
+            	set.toString();
+            }
+            //int rowCount = statement.executeUpdate(query);
+            connection.close();
+            return t;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+		return null;
     }
 }
