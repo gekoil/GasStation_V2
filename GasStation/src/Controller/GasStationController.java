@@ -1,5 +1,6 @@
 package Controller;
 
+import Annotations.DuringWash;
 import BL.Car;
 import BL.ClientCar;
 import BL.GasStation;
@@ -14,9 +15,14 @@ import com.sun.istack.internal.Nullable;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class GasStationController implements MainFuelEventListener,
 		UIFuelEventListener, StatisticEventListener, UIStatisticsListener,
@@ -42,6 +48,7 @@ public class GasStationController implements MainFuelEventListener,
 		this.carView = carView;
 		this.gs.addFuelPoolListener(this);
 		this.gs.addStatisticsListener(this);
+		this.gs.addCarEventListener(this);
 		this.fuelView.registerListener(this);
 		this.statisticView.registerListener(this);
 		this.carView.registerListener(this);
@@ -173,8 +180,10 @@ public class GasStationController implements MainFuelEventListener,
 			carView.updateErrorMessege("The amount fuel requested is to high!");
 			return null;
 		}
+
 		if(liters < 0)
 			liters = 0;
+
 		Car c = new Car(carId_generator++, wash, liters, pump, gs);
 		if(owner != null) {
 			c.setOwner(owner);
@@ -199,6 +208,7 @@ public class GasStationController implements MainFuelEventListener,
 			fuelView.setDisable();
 			carView.setDisable();
 		}
+
 		serverRunning = false;
 	}
 
@@ -208,28 +218,52 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public void GetFueled(Car c) {
+	public void getFueled(Car c) {
 		if(c.getOwner() != null) {
-			Socket carSocet = c.getOwner();
-			if(!carSocet.isClosed()) {
+			Socket carSocket = c.getOwner();
+			if(!carSocket.isClosed()) {
 				try {
-					ObjectOutputStream out = new ObjectOutputStream(carSocet.getOutputStream());
-				} catch (IOException e) {}
+					ObjectOutputStream out = new ObjectOutputStream(carSocket.getOutputStream());
+					ClientCar clCar = c.toClientCar();
+					clCar.setStatus("Fueled");
+					out.writeObject(clCar);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 
 	@Override
-	public void GetWashed(Car c) {
+	public void getWashed(Car c) {
 		if(c.getOwner() != null) {
-			Socket carSocet = c.getOwner();
-			if(!carSocet.isClosed()) {
+			Socket carSocket = c.getOwner();
+			if(!carSocket.isClosed()) {
 				try {
+					ObjectOutputStream out = new ObjectOutputStream(carSocket.getOutputStream());
 					ClientCar clCar = c.toClientCar();
-					ObjectOutputStream out = new ObjectOutputStream(carSocet.getOutputStream());
-				} catch (IOException e) {}
+					List<Method> methods = getMethodsAnnotatedWith(Car.class, DuringWash.class);
+					int index = (int) ((Math.random() * 10) % methods.size());
+					clCar.setStatus(methods.get(index).getName());
+					out.writeObject(clCar);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
+	}
+
+	private static List<Method> getMethodsAnnotatedWith(final Class<?> type, final Class<? extends Annotation> annotation) {
+		final List<Method> methods = new ArrayList<>();
+		final List<Method> allMethods = new ArrayList<>(Arrays.asList(type.getDeclaredMethods()));
+		for (final Method method : allMethods) {
+			if (method.isAnnotationPresent(annotation)) {
+				methods.add(method);
+			}
+		}
+		return methods;
 	}
 
 }

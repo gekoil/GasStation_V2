@@ -3,6 +3,6 @@ package Listeners;
 import BL.Car;
 
 public interface CarsEventListener {
-	void GetFueled(Car c);
-	void GetWashed(Car c);
+	void getFueled(Car c);
+	void getWashed(Car c);
 }

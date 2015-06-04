@@ -1,5 +1,6 @@
 package BL;
 
+import Listeners.CarsEventListener;
 import Listeners.MainFuelEventListener;
 import Listeners.StatisticEventListener;
 import UI.GasStationUI;
@@ -19,6 +20,7 @@ public class GasStation extends Observable {
 	private FileHandler handler;
 	private Vector<MainFuelEventListener> MainFuelListeners;
 	private Vector<StatisticEventListener> statisticsListeners;
+	private Vector<CarsEventListener> carsEventListeners;
 	private int numOfPumps;
 	private double pricePerLiter;
 	private Pump[] pumps;
@@ -36,8 +38,9 @@ public class GasStation extends Observable {
 	private int numOfCarsInTheGasStationCurrently;
 	
 	public GasStation(int numOfPumps, double pricePerLiter, MainFuelPool mfpool, CleaningService cs) {
-		this.MainFuelListeners = new Vector<MainFuelEventListener>();
-		this.statisticsListeners = new Vector<StatisticEventListener>();
+		this.MainFuelListeners = new Vector<>();
+		this.statisticsListeners = new Vector<>();
+		this.carsEventListeners = new Vector<>();
 		this.numOfPumps = numOfPumps;
 		this.pricePerLiter = pricePerLiter;
 		this.pumps = new Pump[numOfPumps];
@@ -95,7 +98,10 @@ public class GasStation extends Observable {
 			mfpool.setCurrentCapacity(mfpool.getCurrentCapacity() - car.getNumOfLiters());		
 		}
 		// fueling up by the chosen pump
-		pumps[car.getPumpNum()-1].pumpFuelUp(car, mfpool, this);	
+		pumps[car.getPumpNum()-1].pumpFuelUp(car, mfpool, this);
+
+		fireCarFueledEvent(car);
+
 		statistics.setNumOfCarsFueledUp(statistics.getNumOfCarsFueledUp() + 1);
 		statistics.setFuelProfit(statistics.getFuelProfit() + pricePerLiter * car.getNumOfLiters());
 		// if less than 20% and isn't filling the fuel pool currently, raise an event
@@ -124,6 +130,7 @@ public class GasStation extends Observable {
 	public boolean autoClean(Car car) {
 		boolean continueToManualClean;
 		continueToManualClean = cs.getAutoClean().autoClean(gasStationClosing, car, cs.getSecondsPerAutoClean(), cs, this);
+		fireCarWashedEvent(car);
 		return continueToManualClean;
 	} // autoClean
 	
@@ -262,6 +269,10 @@ public class GasStation extends Observable {
 	public void addStatisticsListener(StatisticEventListener lis) {
 		statisticsListeners.add(lis);
 	}
+
+	public void addCarEventListener(CarsEventListener lis) {
+		carsEventListeners.add(lis);
+	}
 	
 	protected void fireFillUPMainFuelEvent() {
 		for(MainFuelEventListener l : MainFuelListeners)
@@ -294,9 +305,18 @@ public class GasStation extends Observable {
 	}
 	
 	protected void updateStatistics() {
-		System.out.println("here");
 		for(StatisticEventListener l : statisticsListeners)
 			l.ShowStatistics(statistics.toString());
+	}
+
+	protected void fireCarWashedEvent(Car car) {
+		for(CarsEventListener l : carsEventListeners)
+			l.getWashed(car);
+	}
+
+	protected void fireCarFueledEvent(Car car) {
+		for(CarsEventListener l : carsEventListeners)
+			l.getFueled(car);
 	}
 	
 }  // GasStation
