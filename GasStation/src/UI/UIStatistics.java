@@ -2,8 +2,10 @@ package UI;
 
 import java.util.LinkedList;
 
+import DAL.Transaction;
 import Listeners.UIStatisticsListener;
 import Views.StatisticsAbstractView;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -19,6 +21,7 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 	private TextArea stat;
 	private Button infoBtn;
 	private Button closeBtn;
+	private Button historyBtn;
 	
 	public UIStatistics() {
 		setOrientation(Orientation.VERTICAL);
@@ -35,6 +38,16 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 				listener.getStatistics();
 			}
 		});
+		
+		historyBtn = new Button("Get history");
+		historyBtn.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+			
+			//Transaction trns = listener.getHistory(null, null, null);
+			}
+		});
+		
 		closeBtn = new Button("Close Station");
 		closeBtn.setOnAction(new EventHandler<ActionEvent>() {
 			@Override

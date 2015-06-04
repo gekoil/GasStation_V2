@@ -67,7 +67,7 @@ public class DatabaseConnector {
         }
     }
     
-    public Vector<?> getTransactions(String first, String last, boolean pump) {
+    public Vector<?> getTransactions(LocalDate first, LocalDate last, boolean pump) {
         try {
             Connection connection = dataSource.getConnection();
             Statement statement = connection.createStatement();

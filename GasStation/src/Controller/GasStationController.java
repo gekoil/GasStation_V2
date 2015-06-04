@@ -5,6 +5,7 @@ import BL.Car;
 import BL.ClientCar;
 import BL.GasStation;
 import DAL.DatabaseConnector;
+import DAL.Transaction;
 import Listeners.*;
 import Views.CarCreatorAbstractView;
 import Views.MainFuelAbstractView;
@@ -19,6 +20,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -218,7 +220,7 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public void getFueled(Car c) {
+	public void getFueled(Car c, Transaction t) {
 		if(c.getOwner() != null) {
 			Socket carSocket = c.getOwner();
 			if(!carSocket.isClosed()) {
@@ -227,7 +229,7 @@ public class GasStationController implements MainFuelEventListener,
 					ClientCar clCar = c.toClientCar();
 					clCar.setStatus("Fueled");
 					out.writeObject(clCar);
-
+					dbConnector.storeTransaction(t);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -236,7 +238,7 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public void getWashed(Car c) {
+	public void getWashed(Car c, Transaction t) {
 		if(c.getOwner() != null) {
 			Socket carSocket = c.getOwner();
 			if(!carSocket.isClosed()) {
@@ -247,7 +249,7 @@ public class GasStationController implements MainFuelEventListener,
 					int index = (int) ((Math.random() * 10) % methods.size());
 					clCar.setStatus(methods.get(index).getName());
 					out.writeObject(clCar);
-
+					dbConnector.storeTransaction(t);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -264,6 +266,12 @@ public class GasStationController implements MainFuelEventListener,
 			}
 		}
 		return methods;
+	}
+
+	@Override
+	public Transaction getHistory(LocalDate firstDate, LocalDate lastDate, boolean byPump) {
+		dbConnector.getTransactions(firstDate, lastDate, byPump);
+		return null;
 	}
 
 }
