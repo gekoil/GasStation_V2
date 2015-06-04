@@ -105,7 +105,7 @@ public class CarCreatorPane extends GridPane implements CarCreatorAbstractView {
 				try {
 					fuel = Integer.parseInt(fuelField.getText());
 					wash = washCbx.selectedProperty().getValue();
-					listener.createNewCar(fuel, wash, choose);
+					listener.createNewCar(fuel, wash, choose, null);
 					fuelField.setText("Liters");
 					washCbx.selectedProperty().set(false);
 					pumpCmb.setValue(1);

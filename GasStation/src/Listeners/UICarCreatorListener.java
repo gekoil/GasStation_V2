@@ -1,5 +1,10 @@
 package Listeners;
 
+import BL.Car;
+import com.sun.istack.internal.Nullable;
+import java.net.InetAddress;
+import java.net.Socket;
+
 public interface UICarCreatorListener {
-	void createNewCar(int liters, boolean wash, int pump);
+	Car createNewCar(int liters, boolean wash, int pump, @Nullable Socket owner);
 }

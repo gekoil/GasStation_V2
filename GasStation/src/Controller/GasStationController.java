@@ -1,18 +1,21 @@
 package Controller;
 
 import BL.Car;
+import BL.ClientCar;
 import BL.GasStation;
 import DAL.DatabaseConnector;
 import Listeners.*;
 import Views.CarCreatorAbstractView;
 import Views.MainFuelAbstractView;
 import Views.StatisticsAbstractView;
+import com.sun.istack.internal.Nullable;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class GasStationController implements MainFuelEventListener,
 		UIFuelEventListener, StatisticEventListener, UIStatisticsListener,
@@ -28,6 +31,8 @@ public class GasStationController implements MainFuelEventListener,
 	private StatisticsAbstractView statisticView;
 	private CarCreatorAbstractView carView;
 
+	private HashMap<String, Socket> clients;
+
 	public GasStationController(GasStation gs, MainFuelAbstractView FuelView,
 			StatisticsAbstractView statisticView, CarCreatorAbstractView carView) {
 		this.gs = gs;
@@ -39,8 +44,11 @@ public class GasStationController implements MainFuelEventListener,
 		this.fuelView.registerListener(this);
 		this.statisticView.registerListener(this);
 		this.carView.registerListener(this);
-		this.dbConnector = DatabaseConnector.getInstance();
-		this.dbConnector = DatabaseConnector.getInstance();
+
+		dbConnector = DatabaseConnector.getInstance();
+
+		clients = new HashMap<>();
+
 		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
@@ -61,8 +69,19 @@ public class GasStationController implements MainFuelEventListener,
 						try {
 							ObjectInputStream input  = new ObjectInputStream(client.getInputStream());
 							ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
-							client.close();
-						} catch (IOException e) {
+							Object carInput = input.readObject();
+							if(carInput instanceof ClientCar) {
+								// transform to server side Car object
+								ClientCar car = (ClientCar) carInput;
+								Car result = createNewCar(car.getFuel(),car.isNeedWash(), car.getPump(), client);
+
+								// respond with client car with ID
+								if(result != null) {
+									car.setId(result.getID());
+									output.writeObject(car);
+								}
+							}
+						} catch (IOException | ClassNotFoundException e) {
 							e.printStackTrace();
 						}
 					}
@@ -127,7 +146,7 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public void fireTheCorrentCapacity(int liters) {
+	public void fireTheCurrentCapacity(int liters) {
 		fuelView.updateMainFuelCapacities(liters);
 	}
 
@@ -142,25 +161,31 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public void getCorrentCapacity() {
+	public void getCurrentCapacity() {
 		fuelView.updateMainFuelCapacities(gs.getMfpool().getCurrentCapacity());
 
 	}
 
 	@Override
-	public void createNewCar(int liters, boolean wash, int pump) {
+	public Car createNewCar(int liters, boolean wash, int pump, @Nullable Socket owner) {
 		if(liters > gs.getMfpool().getMaxCapacity()) {
 			carView.updateErrorMessege("The amount fuel requested is to high!");
-			return;
+			return null;
 		}
 		if(liters < 0)
 			liters = 0;
 		Car c = new Car(carId_generator++, wash, liters, pump, gs);
+		if(owner != null) {
+			c.setOwner(owner);
+		}
+
 		try {
 			gs.enterGasStation(c);
 			carView.updateConfirmMessege("You Successfully create new car.");
+			return c;
 		} catch (Exception e) {
 			carView.updateErrorMessege(e.getMessage());
+			return null;
 		}
 	}
 

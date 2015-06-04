@@ -12,8 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
-import com.mysql.jdbc.UpdatableResultSet;
-
 // GasStation is Observable since it fires the "less than 20%" event
 // GasSupplier listens on the event and fills the MainFuelPool on fire
 public class GasStation extends Observable {
@@ -287,7 +285,7 @@ public class GasStation extends Observable {
 	
 	protected void fireTheMainFuelPoolCapacity() {
 		for(MainFuelEventListener l : MainFuelListeners)
-			l.fireTheCorrentCapacity(mfpool.getCurrentCapacity());
+			l.fireTheCurrentCapacity(mfpool.getCurrentCapacity());
 	}
 	
 	protected void fireCantCloseWhileFilling() {

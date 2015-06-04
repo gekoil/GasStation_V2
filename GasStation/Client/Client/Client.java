@@ -11,7 +11,8 @@ import BL.ClientCar;
 import Listeners.ClientListener;
 
 public class Client extends Thread{
-	
+	private static int SERVER_PORT = 9090;
+
 	private Socket socket = null;
 	private ObjectInputStream inputStream;
 	private ObjectOutput outputStream;
@@ -19,7 +20,7 @@ public class Client extends Thread{
 	
 	public void run() {
 		try {
-			socket = new Socket("localhost", 7000);
+			socket = new Socket("localhost", SERVER_PORT);
 			inputStream = new ObjectInputStream(socket.getInputStream()); 
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
 		} catch (Exception e) {	System.err.println(e);
@@ -29,7 +30,12 @@ public class Client extends Thread{
 	public void sendCar(ClientCar car) {
 		try {
 			outputStream.writeObject(car);
-			carReceiver();
+			if(car.getId() > 0) {
+				carReceiver();
+			} else {
+				socket.close();
+			}
+
 		} catch (IOException e) {
 			for(ClientListener l : listeners)
 				l.fireEndOfConection();
@@ -40,21 +46,19 @@ public class Client extends Thread{
 		ClientCar car;
 		try {
 			Object temp = inputStream.readObject();
-			if(temp == null)
+			if (temp == null) {
 				return;
-			else if(temp instanceof ClientCar)  {
+			} else if(temp instanceof ClientCar)  {
 				car =(ClientCar) temp;
 			}
 			else {
 				for(ClientListener l : listeners)
 					l.fireIlligalObject();
 			}
-		} catch (ClassNotFoundException e) {
-			
-		} catch (IOException e) {
-			
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
 		}
-		
+
 	}
 	
 	public void registerListener(ClientListener lis) {

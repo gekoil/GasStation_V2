@@ -13,8 +13,8 @@ import View.AbstractRegisterView;
 
 public class ClientController implements ClientListener, RegisterUIListener,
 		ConnectionUIListener {
-
 	private Client client;
+
 	private AbstractCarsView carView;
 	private AbstractRegisterView newCarView;
 	private AbstractConnectionView connectView;
@@ -48,7 +48,11 @@ public class ClientController implements ClientListener, RegisterUIListener,
 
 	@Override
 	public void setConnection(boolean onOff) {
-		
+		if(!onOff) {
+			ClientCar car = new ClientCar(0, false, 0);
+			car.setId(-1);
+			client.sendCar(car);
+		}
 	}
 
 	@Override

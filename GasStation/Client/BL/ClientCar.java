@@ -50,5 +50,12 @@ public class ClientCar implements Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
+	public int getPump() {
+		return pump;
+	}
+
+	public void setPump(int pump) {
+		this.pump = pump;
+	}
 }
