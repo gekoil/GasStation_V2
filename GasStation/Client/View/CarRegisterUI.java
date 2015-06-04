@@ -1,4 +1,4 @@
-package ClientUI;
+package View;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
 import Listeners.RegisterListener;
-import View.AbstractRegisterView;
 
 public class CarRegisterUI extends JPanel implements AbstractRegisterView {
 

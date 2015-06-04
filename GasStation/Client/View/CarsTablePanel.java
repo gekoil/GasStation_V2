@@ -1,4 +1,4 @@
-package ClientUI;
+package View;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -15,7 +15,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import BL.ClientCar;
-import View.AbstractCarsView;
 
 public class CarsTablePanel extends JPanel implements AbstractCarsView {
 	

@@ -18,6 +18,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import BL.ClientCar;
 import View.AbstractCarsView;
+import View.CarRegisterUI;
+import View.CarsTablePanel;
 
 import com.sun.javafx.collections.SetListenerHelper;
 
