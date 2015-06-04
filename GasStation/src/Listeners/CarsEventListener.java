@@ -4,5 +4,5 @@ import BL.Car;
 
 public interface CarsEventListener {
 	void GetFueled(Car c);
-	void GetWashed(Car c, String methodName);
+	void GetWashed(Car c);
 }

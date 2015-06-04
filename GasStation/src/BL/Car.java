@@ -72,6 +72,10 @@ public class Car implements Runnable {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	public ClientCar toClientCar() {
+		return new ClientCar(numOfLiters, cleanedUp, pumpNum);
+	}
 
 	public int getID() {
 		return id;

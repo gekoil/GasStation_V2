@@ -8,6 +8,7 @@ import Listeners.*;
 import Views.CarCreatorAbstractView;
 import Views.MainFuelAbstractView;
 import Views.StatisticsAbstractView;
+
 import com.sun.istack.internal.Nullable;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ import java.util.HashMap;
 
 public class GasStationController implements MainFuelEventListener,
 		UIFuelEventListener, StatisticEventListener, UIStatisticsListener,
-		UICarCreatorListener {
+		UICarCreatorListener, CarsEventListener {
 
 	private static int carId_generator = 9000;
 	private static int SERVER_PORT = 9090;
@@ -204,6 +205,31 @@ public class GasStationController implements MainFuelEventListener,
 	@Override
 	public void fireCantCloseWhileFilling() {
 		statisticView.setStatistics("The gas station can't be closed\nwhile filling the main fuel pool.");
+	}
+
+	@Override
+	public void GetFueled(Car c) {
+		if(c.getOwner() != null) {
+			Socket carSocet = c.getOwner();
+			if(!carSocet.isClosed()) {
+				try {
+					ObjectOutputStream out = new ObjectOutputStream(carSocet.getOutputStream());
+				} catch (IOException e) {}
+			}
+		}
+	}
+
+	@Override
+	public void GetWashed(Car c) {
+		if(c.getOwner() != null) {
+			Socket carSocet = c.getOwner();
+			if(!carSocet.isClosed()) {
+				try {
+					ClientCar clCar = c.toClientCar();
+					ObjectOutputStream out = new ObjectOutputStream(carSocet.getOutputStream());
+				} catch (IOException e) {}
+			}
+		}
 	}
 
 }
