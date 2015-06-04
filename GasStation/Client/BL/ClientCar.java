@@ -6,7 +6,6 @@ public class ClientCar implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private static int counter = 0;
 	private int id;
 	private boolean needWash;
 	private int fuel;
@@ -17,7 +16,6 @@ public class ClientCar implements Serializable {
 		this.fuel = fuel;
 		this.needWash = wash;
 		this.pump = pump;
-		this.id = counter++;
 		this.status = "";
 	}
 

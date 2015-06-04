@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 
-import Listeners.RegisterListener;
+import Listeners.RegisterUIListener;
 
 public class CarRegisterUI extends JPanel implements AbstractRegisterView {
 
@@ -27,10 +27,10 @@ public class CarRegisterUI extends JPanel implements AbstractRegisterView {
 	private JCheckBox washCbx;
 	private JComboBox<Integer> pumpCmb;
 	private JButton submitBtn;
-	private LinkedList<RegisterListener> listeners;
+	private LinkedList<RegisterUIListener> listeners;
 
 	public CarRegisterUI(int pumpsNum) {
-		listeners = new LinkedList<RegisterListener>();
+		listeners = new LinkedList<RegisterUIListener>();
 		createComponents(pumpsNum);
 		GridLayout grid = new GridLayout(0, 2, 10, 10);
 		JPanel panel = new JPanel(grid);
@@ -72,7 +72,7 @@ public class CarRegisterUI extends JPanel implements AbstractRegisterView {
 	}
 
 	@Override
-	public void registeListener(RegisterListener lis) {
+	public void registeListener(RegisterUIListener lis) {
 		listeners.add(lis);
 	}
 

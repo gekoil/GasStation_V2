@@ -1,7 +1,7 @@
 package View;
 
-import Listeners.RegisterListener;
+import Listeners.RegisterUIListener;
 
 public interface AbstractRegisterView {
-	void registeListener(RegisterListener lis);
+	void registeListener(RegisterUIListener lis);
 }

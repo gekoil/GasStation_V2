@@ -20,19 +20,27 @@ import BL.ClientCar;
 import View.AbstractCarsView;
 import View.CarRegisterUI;
 import View.CarsTablePanel;
+import View.ConnectionView;
 
 import com.sun.javafx.collections.SetListenerHelper;
 
 public class MainFrame {
 	
-	private CarRegisterUI register;
+	private static CarRegisterUI register;
+	private static JTabbedPane tabedPane;
+	private static ConnectionView connect;
 
 	private static JTabbedPane createContentPane() {
-		JTabbedPane tabedPane = new JTabbedPane();
+		tabedPane = new JTabbedPane();
 		tabedPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
-		CarRegisterUI register = new CarRegisterUI(3);
-		tabedPane.add("Register Car", register);
+		register = new CarRegisterUI(3);
+		connect = new ConnectionView();
+		BorderLayout border = new BorderLayout(10, 10);
+		JPanel panel = new JPanel(border);
+		panel.add(connect, BorderLayout.NORTH);
+		panel.add(register, BorderLayout.CENTER);
+		tabedPane.add("Register Car & Connection", panel);
 
 		CarsTablePanel table = new CarsTablePanel();
 		tabedPane.add("Cars Table", table);

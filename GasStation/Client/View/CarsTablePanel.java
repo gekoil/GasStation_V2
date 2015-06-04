@@ -35,7 +35,7 @@ public class CarsTablePanel extends JPanel implements AbstractCarsView {
 	private void createTable() {
 		model = new DefaultTableModel();
 		carTbl = new JTable(model);
-		carTbl.setPreferredScrollableViewportSize(new Dimension(300, 200));
+		carTbl.setPreferredScrollableViewportSize(new Dimension(400, 200));
 		model.setColumnIdentifiers(new Object[] {"Car I.D.", "Is Washed", "Fuel needs", "Status"});
 		scroller = new JScrollPane(carTbl);
 		scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);

@@ -1,5 +1,5 @@
 package Listeners;
 
-public interface RegisterListener {
+public interface RegisterUIListener {
 	void fireNewCar(int fuel, boolean needFuel, int pump);
 }

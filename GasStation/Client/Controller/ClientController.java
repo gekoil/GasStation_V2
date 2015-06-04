@@ -1,55 +1,58 @@
 package Controller;
 
+import javax.swing.JOptionPane;
+
 import BL.ClientCar;
 import Client.Client;
 import Listeners.ClientListener;
-import Listeners.RegisterListener;
+import Listeners.ConnectionUIListener;
+import Listeners.RegisterUIListener;
 import View.AbstractCarsView;
+import View.AbstractConnectionView;
 import View.AbstractRegisterView;
 
-public class ClientController implements ClientListener, RegisterListener {
+public class ClientController implements ClientListener, RegisterUIListener,
+		ConnectionUIListener {
 
 	private Client client;
 	private AbstractCarsView carView;
 	private AbstractRegisterView newCarView;
+	private AbstractConnectionView connectView;
 
 	public ClientController(Client client, AbstractCarsView carView,
-			AbstractRegisterView newCarView) {
+			AbstractRegisterView newCarView, AbstractConnectionView connectView) {
 		this.client = client;
 		this.client.registerListener(this);
 		this.carView = carView;
 		this.newCarView = newCarView;
-		
+		this.newCarView.registeListener(this);
+		this.connectView = connectView;
+		this.connectView.registerListener(this);
 	}
 
 	@Override
-	public void fireNewCar(int fuel, boolean needFuel, int pump) {
-		// TODO Auto-generated method stub
-
+	public void fireNewCar(int fuel, boolean needWash, int pump) {
+		ClientCar car = new ClientCar(fuel, needWash, pump);
+		client.sendCar(car);
 	}
 
 	@Override
 	public void updateCarInfo(ClientCar car) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void fireIlligalObject() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void fireMessage(String s) {
-		// TODO Auto-generated method stub
-
+		carView.carUpdate(car);
 	}
 
 	@Override
 	public void fireEndOfConection() {
-		// TODO Auto-generated method stub
+		connectView.setConnectionStatus(false);
+	}
 
+	@Override
+	public void setConnection(boolean onOff) {
+		
+	}
+
+	@Override
+	public void fireIlligalObject() {
 	}
 
 }
