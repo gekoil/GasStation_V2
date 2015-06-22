@@ -1,5 +1,6 @@
 package UI;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 
 import DAL.Transaction;
@@ -12,8 +13,11 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 
 public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 	
@@ -22,6 +26,12 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 	private Button infoBtn;
 	private Button closeBtn;
 	private Button historyBtn;
+	private HBox dateHbx;
+	private Button statByDayBtn;
+	private DatePicker startDate;
+	private DatePicker endDate;
+	private Label fromLbl;
+	private Label untilLbl;
 	
 	public UIStatistics() {
 		setOrientation(Orientation.VERTICAL);
@@ -60,9 +70,34 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 				});
 			}
 		});
+		createHBox();
 		getChildren().add(stat);
 		getChildren().add(infoBtn);
 		getChildren().add(closeBtn);
+		getChildren().add(dateHbx);
+	}
+	
+	private void createHBox() {
+		dateHbx = new HBox();
+		dateHbx.setSpacing(10);
+		
+		statByDayBtn = new Button("Get info by date");
+		startDate = new DatePicker(LocalDate.now());
+		fromLbl = new Label("From:");
+		endDate = new DatePicker(LocalDate.now());
+		untilLbl = new Label("Until:");
+		
+		statByDayBtn.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent arg0) {
+				LocalDate start = startDate.getValue();
+				LocalDate end = endDate.getValue();
+				listener.getHistory(start, end, true);
+			}
+		});
+		
+		dateHbx.getChildren().addAll(statByDayBtn, fromLbl, startDate, untilLbl, endDate);
 	}
 
 	@Override
