@@ -31,13 +31,16 @@ public class Client extends Thread{
 			inputStream = new ObjectInputStream(socket.getInputStream());
 			for(ClientListener l : listeners)
 				l.updateConectionStatus(true);
-			Runnable runInput = new Runnable() {
-				@Override
-				public void run() {
-					carReceiver();
-				}
-			};
-			new Thread(runInput).start();
+			while (!endOfConnection) {
+				Runnable runInput = new Runnable() {
+					@Override
+					public void run() {
+						carReceiver();
+					}
+				};
+				new Thread(runInput).start();
+				join();
+			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} 
@@ -47,29 +50,27 @@ public class Client extends Thread{
 		try {
 			outputStream.reset();
 			outputStream.writeObject(car);
-			
 		} catch (IOException e) {
 			e.getMessage();
 		}
 	}
 	
 	private void carReceiver() {
-		while(!endOfConnection) {
-			try {
-				Object temp = inputStream.readObject();
-				if (temp == null) {
-					endOfConnection = true;
-				} else if(temp instanceof ClientCar)  {
-					ClientCar car =(ClientCar) temp;
-					System.out.println("Incoming info.");
-				}
-				else {
-					for(ClientListener l : listeners)
-						l.fireIlligalObject();
-				}
-			} catch (ClassNotFoundException | IOException e) {
-				System.out.println(e.getMessage());
+		try {
+			Object temp = inputStream.readObject();
+			if (temp == null) {
+				endOfConnection = true;
+			} else if(temp instanceof ClientCar)  {
+				ClientCar car =(ClientCar) temp;
+				for(ClientListener l : listeners)
+					l.updateCarInfo(car);
 			}
+			else {
+				for(ClientListener l : listeners)
+					l.fireIlligalObject();
+			}
+		} catch (ClassNotFoundException | IOException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 	

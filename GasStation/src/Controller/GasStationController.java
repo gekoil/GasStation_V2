@@ -80,6 +80,7 @@ public class GasStationController implements MainFuelEventListener,
 							ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
 							ObjectInputStream input  = new ObjectInputStream(client.getInputStream());
 							Object carInput;
+							do {
 							carInput = input.readObject();
 							if(carInput instanceof ClientCar) {
 								// transform to server side Car object
@@ -91,7 +92,11 @@ public class GasStationController implements MainFuelEventListener,
 									car.setId(result.getID());
 									output.writeObject(car);
 								}
+								else
+									output.writeObject(null);
 							}
+							output.reset();
+							} while(carInput != null);
 						} catch (IOException | ClassNotFoundException e) {
 							e.printStackTrace();
 						}
