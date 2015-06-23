@@ -36,7 +36,7 @@ public class CarsTablePanel extends JPanel implements AbstractCarsView {
 		model = new DefaultTableModel();
 		carTbl = new JTable(model);
 		carTbl.setPreferredScrollableViewportSize(new Dimension(400, 200));
-		model.setColumnIdentifiers(new Object[] {"Car I.D.", "Is Washed", "Fuel needs", "Status"});
+		model.setColumnIdentifiers(new Object[] {"Car I.D.", "Need Wash", "Fuel needs", "Status"});
 		scroller = new JScrollPane(carTbl);
 		scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	}
@@ -49,11 +49,12 @@ public class CarsTablePanel extends JPanel implements AbstractCarsView {
 	@Override
 	public void carUpdate(ClientCar car) {
 		int numRow = model.getRowCount();
-		if(car.getFuel() == 0 && car.isNeedWash() == false) {
+		if(car.getStatus().equals("Fueled") && car.isNeedWash() == false) {
 			for(int i = 0; i < numRow; i++) {
 				int idInRow = (Integer)model.getValueAt(i, 0);
 				if(idInRow == car.getId()) {
 					model.removeRow(i);
+					break;
 				}
 			}
 		}
@@ -68,8 +69,9 @@ public class CarsTablePanel extends JPanel implements AbstractCarsView {
 					model.setValueAt(car.getStatus(), i, 3);
 				}
 			}
-			if(exist)
+			if(!exist)
 				model.addRow(new Object[] {car.getId(), car.isNeedWash(), car.getFuel(), car.getStatus()});
 		}
+		model.fireTableChanged(null);
 	}
 }

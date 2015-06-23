@@ -18,6 +18,15 @@ public class ClientCar implements Serializable {
 		this.pump = pump;
 		this.status = "";
 	}
+	
+	public ClientCar(int id,int fuel, boolean wash, int pump) {
+		this.id = id;
+		this.fuel = fuel;
+		this.needWash = wash;
+		this.pump = pump;
+		this.status = "";
+	}
+
 
 	public int getId() {
 		return id;

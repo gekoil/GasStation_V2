@@ -3,7 +3,9 @@ package Controller;
 import Annotations.DuringWash;
 import BL.Car;
 import BL.ClientCar;
+import BL.ClientsSoketInfo;
 import BL.GasStation;
+import Client.Client;
 import DAL.DatabaseConnector;
 import DAL.Transaction;
 import Listeners.*;
@@ -40,7 +42,7 @@ public class GasStationController implements MainFuelEventListener,
 	private StatisticsAbstractView statisticView;
 	private CarCreatorAbstractView carView;
 
-	private HashMap<String, Socket> clients;
+	private HashMap<String, ClientsSoketInfo> clients;
 
 	public GasStationController(GasStation gs, MainFuelAbstractView FuelView,
 			StatisticsAbstractView statisticView, CarCreatorAbstractView carView) {
@@ -77,25 +79,20 @@ public class GasStationController implements MainFuelEventListener,
 					@Override
 					public void run() {
 						try {
-							ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
-							ObjectInputStream input  = new ObjectInputStream(client.getInputStream());
+							ClientsSoketInfo clientData = new ClientsSoketInfo(client);
+							clients.put(clientData.getClientAddress(), clientData);
 							Object carInput;
 							do {
-							carInput = input.readObject();
-							if(carInput instanceof ClientCar) {
-								// transform to server side Car object
-								ClientCar car = (ClientCar) carInput;
-								Car result = createNewCar(car.getFuel(),car.isNeedWash(), car.getPump(), client);
-
-								// respond with client car with ID
-								if(result != null) {
-									car.setId(result.getID());
-									output.writeObject(car);
+								carInput = clientData.getInputStream().readObject();
+								if(carInput instanceof ClientCar) {
+									// transform to server side Car object
+									ClientCar car = (ClientCar) carInput;
+									Car result = createNewCar(car.getFuel(),car.isNeedWash(), car.getPump(), clientData);
+	
+									// respond with client car with ID
+									if(result == null)
+										clientData.getOutputStream().writeObject(null);
 								}
-								else
-									output.writeObject(null);
-							}
-							output.reset();
 							} while(carInput != null);
 						} catch (IOException | ClassNotFoundException e) {
 							e.printStackTrace();
@@ -183,7 +180,7 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public Car createNewCar(int liters, boolean wash, int pump, @Nullable Socket owner) {
+	public Car createNewCar(int liters, boolean wash, int pump, @Nullable ClientsSoketInfo owner) {
 		if(liters > gs.getMfpool().getMaxCapacity()) {
 			carView.updateErrorMessege("The amount fuel requested is to high!");
 			return null;
@@ -195,11 +192,16 @@ public class GasStationController implements MainFuelEventListener,
 		Car c = new Car(carId_generator++, wash, liters, pump, gs);
 		if(owner != null) {
 			c.setOwner(owner);
+			try {
+				owner.getOutputStream().writeObject(c.toClientCar());
+			} catch (IOException e) {
+				System.out.println(e.getMessage());
+			}
 		}
 
 		try {
 			gs.enterGasStation(c);
-			carView.updateConfirmMessege("You Successfully create new car.");
+			carView.updateConfirmMessege("You Successfully create new car.\n" + "ID: " + c.getID());
 			return c;
 		} catch (Exception e) {
 			carView.updateErrorMessege(e.getMessage());
@@ -228,14 +230,13 @@ public class GasStationController implements MainFuelEventListener,
 	@Override
 	public void getFueled(Car c, Transaction t) {
 		if(c.getOwner() != null) {
-			Socket carSocket = c.getOwner();
-			if(!carSocket.isClosed()) {
+			ClientsSoketInfo carSocket = c.getOwner();
+			if(!carSocket.getSocket().isClosed()) {
 				try {
-					ObjectOutputStream out = new ObjectOutputStream(carSocket.getOutputStream());
 					ClientCar clCar = c.toClientCar();
 					clCar.setStatus("Fueled");
-					out.writeObject(clCar);
-					dbConnector.storeTransaction(t);
+					carSocket.getOutputStream().writeObject(clCar);
+					//dbConnector.storeTransaction(t);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -246,16 +247,18 @@ public class GasStationController implements MainFuelEventListener,
 	@Override
 	public void getWashed(Car c, Transaction t) {
 		if(c.getOwner() != null) {
-			Socket carSocket = c.getOwner();
-			if(!carSocket.isClosed()) {
+			ClientsSoketInfo carSocket = c.getOwner();
+			if(!carSocket.getSocket().isClosed()) {
 				try {
-					ObjectOutputStream out = new ObjectOutputStream(carSocket.getOutputStream());
 					ClientCar clCar = c.toClientCar();
-					List<Method> methods = getMethodsAnnotatedWith(Car.class, DuringWash.class);
-					int index = (int) ((Math.random() * 10) % methods.size());
-					clCar.setStatus(methods.get(index).getName());
-					out.writeObject(clCar);
-					dbConnector.storeTransaction(t);
+					if(t == null) {
+						List<Method> methods = getMethodsAnnotatedWith(Car.class, DuringWash.class);
+						int index = (int) ((Math.random() * 10) % methods.size());
+						clCar.setStatus(methods.get(index).getName());
+					} else
+						clCar.setStatus("Fueled");
+					carSocket.getOutputStream().writeObject(clCar);
+					//dbConnector.storeTransaction(t);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

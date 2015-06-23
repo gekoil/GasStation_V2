@@ -4,6 +4,7 @@ import UI.GasStationUI;
 import Annotations.DuringWash;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -20,7 +21,7 @@ public class Car implements Runnable {
 	private boolean fueledUp;
 	private boolean cleanedUp;
 	private FileHandler handler;
-	private Socket owner;
+	private ClientsSoketInfo owner;
 
 	public Car(int id, boolean wantCleaning, int numOfLiters, int pumpNum, GasStation gs) {
 		this.id = id;
@@ -39,15 +40,6 @@ public class Car implements Runnable {
 		} catch (SecurityException | IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public Car(ClientCar car) {
-		numOfLiters = car.getFuel();
-		wantCleaning = car.isNeedWash();
-		pumpNum = car.getPump();
-		fueledUp = false;
-		cleanedUp = false;
-		//car.
 	}
 
 	public void run() {
@@ -74,7 +66,10 @@ public class Car implements Runnable {
 	}
 	
 	public ClientCar toClientCar() {
-		return new ClientCar(numOfLiters, cleanedUp, pumpNum);
+		boolean needWash = false;
+		if (!cleanedUp && wantCleaning)
+			needWash = true;
+		return new ClientCar(id, numOfLiters, needWash, pumpNum);
 	}
 
 	public int getID() {
@@ -146,11 +141,11 @@ public class Car implements Runnable {
 				+ ", numOfLiters=" + numOfLiters + ", pumpNum=" + pumpNum + "]";
 	}
 
-	public Socket getOwner() {
+	public ClientsSoketInfo getOwner() {
 		return owner;
 	}
 
-	public void setOwner(Socket owner) {
+	public void setOwner(ClientsSoketInfo owner) {
 		this.owner = owner;
 	}
 

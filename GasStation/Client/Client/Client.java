@@ -31,16 +31,13 @@ public class Client extends Thread{
 			inputStream = new ObjectInputStream(socket.getInputStream());
 			for(ClientListener l : listeners)
 				l.updateConectionStatus(true);
-			while (!endOfConnection) {
-				Runnable runInput = new Runnable() {
-					@Override
-					public void run() {
-						carReceiver();
-					}
-				};
-				new Thread(runInput).start();
-				join();
-			}
+			Runnable runInput = new Runnable() {
+				@Override
+				public void run() {
+					carReceiver();
+				}
+			};
+			new Thread(runInput).start();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		} 
@@ -48,7 +45,6 @@ public class Client extends Thread{
 	
 	public void sendCar(ClientCar car) {
 		try {
-			outputStream.reset();
 			outputStream.writeObject(car);
 		} catch (IOException e) {
 			e.getMessage();
@@ -56,21 +52,23 @@ public class Client extends Thread{
 	}
 	
 	private void carReceiver() {
-		try {
-			Object temp = inputStream.readObject();
-			if (temp == null) {
-				endOfConnection = true;
-			} else if(temp instanceof ClientCar)  {
-				ClientCar car =(ClientCar) temp;
-				for(ClientListener l : listeners)
-					l.updateCarInfo(car);
+		while(!endOfConnection) {
+			try {
+				Object temp = inputStream.readObject();
+				if (temp == null) {
+					endOfConection();
+				} else if(temp instanceof ClientCar)  {
+					ClientCar car =(ClientCar) temp;
+					for(ClientListener l : listeners)
+						l.updateCarInfo(car);
+				}
+				else {
+					for(ClientListener l : listeners)
+						l.fireIlligalObject();
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				System.out.println(e.getMessage());
 			}
-			else {
-				for(ClientListener l : listeners)
-					l.fireIlligalObject();
-			}
-		} catch (ClassNotFoundException | IOException e) {
-			System.out.println(e.getMessage());
 		}
 	}
 	
@@ -78,7 +76,19 @@ public class Client extends Thread{
 		listeners.add(lis);
 	}
 	
-	public void endOfConection() {
-		sendCar(null);
+	public synchronized void endOfConection() {
+		if(!endOfConnection) {
+			sendCar(null);
+			try {
+				outputStream.close();
+				inputStream.close();
+				socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			endOfConnection = true;
+			for(ClientListener l : listeners)
+				l.updateConectionStatus(!endOfConnection);
+		}
 	}
 }

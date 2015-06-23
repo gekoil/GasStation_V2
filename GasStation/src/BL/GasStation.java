@@ -111,13 +111,12 @@ public class GasStation extends Observable {
 		trans.type = ServiceType.FUEL;
 		
 		pumps[car.getPumpNum()-1].pumpFuelUp(car, mfpool, this);
-		
-		fireCarFueledEvent(car, trans);
 
 		statistics.setNumOfCarsFueledUp(statistics.getNumOfCarsFueledUp() + 1);
 		statistics.setFuelProfit(statistics.getFuelProfit() + pricePerLiter * car.getNumOfLiters());
+		fireCarFueledEvent(car, trans);
 		// if less than 20% and isn't filling the fuel pool currently, raise an event
-		if (mfpool.getCurrentCapacity() < mfpool.getMaxCapacity()*0.2) {
+		if (mfpool.getCurrentCapacity() <= mfpool.getMaxCapacity()*0.2) {
 			if (!isFillingMainFuelPool()) {
 				fireFillUPMainFuelPoolEvent();
 			}
@@ -137,17 +136,18 @@ public class GasStation extends Observable {
 		if (continueToManualClean) {
 			manualClean(car);
 		}
-	} // cleanCar
-
-	public boolean autoClean(Car car) {
-		boolean continueToManualClean;
-		continueToManualClean = cs.getAutoClean().autoClean(gasStationClosing, car, cs.getSecondsPerAutoClean(), cs, this);
 		Transaction trans = new Transaction();
 		trans.gasStation = getId();
 		trans.amount = cs.getPrice();
 		trans.timeStamp = LocalDate.now();
 		trans.type = ServiceType.CLEANING;
 		fireCarWashedEvent(car, trans);
+	} // cleanCar
+
+	public boolean autoClean(Car car) {
+		boolean continueToManualClean;
+		continueToManualClean = cs.getAutoClean().autoClean(gasStationClosing, car, cs.getSecondsPerAutoClean(), cs, this);
+		fireCarWashedEvent(car, null);
 		return continueToManualClean;
 	} // autoClean
 	
