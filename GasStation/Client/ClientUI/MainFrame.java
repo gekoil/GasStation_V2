@@ -17,6 +17,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import BL.ClientCar;
+import Client.Client;
+import Controller.ClientController;
 import View.AbstractCarsView;
 import View.CarRegisterUI;
 import View.CarsTablePanel;
@@ -29,11 +31,12 @@ public class MainFrame {
 	private static CarRegisterUI register;
 	private static JTabbedPane tabedPane;
 	private static ConnectionView connect;
+	private static CarsTablePanel table;
+	private static ClientController controller;
 
 	private static JTabbedPane createContentPane() {
 		tabedPane = new JTabbedPane();
 		tabedPane.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-
 		register = new CarRegisterUI(3);
 		connect = new ConnectionView();
 		BorderLayout border = new BorderLayout(10, 10);
@@ -42,7 +45,7 @@ public class MainFrame {
 		panel.add(register, BorderLayout.CENTER);
 		tabedPane.add("Register Car & Connection", panel);
 
-		CarsTablePanel table = new CarsTablePanel();
+		table = new CarsTablePanel();
 		tabedPane.add("Cars Table", table);
 
 		return tabedPane;
@@ -56,6 +59,7 @@ public class MainFrame {
 				.getScreenResolution() * 3, (int) Toolkit.getDefaultToolkit()
 				.getScreenResolution() * 2);
 		frame.setContentPane(createContentPane());
+		controller = new ClientController(new Client(), table, register, connect);
 		frame.pack();
 		frame.setVisible(true);
 	}

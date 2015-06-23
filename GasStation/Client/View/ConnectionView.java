@@ -19,7 +19,7 @@ public class ConnectionView extends JPanel implements AbstractConnectionView {
 	private final String CONNECT_BTN = "Connect";
 	private final String DISCONNECT_BTN = "Disconnect";
 	private final String CONNECT_LBL = "The server connect";
-	private final String DISCONNECT_LBL = "The servet disconnect";
+	private final String DISCONNECT_LBL = "The server disconnect";
 	private LinkedList<ConnectionUIListener> listeners;
 	
 	public ConnectionView() {
@@ -34,7 +34,6 @@ public class ConnectionView extends JPanel implements AbstractConnectionView {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("Click");
 				for(ConnectionUIListener l : listeners) {
 					l.setConnection(!correntStatus);
 				}

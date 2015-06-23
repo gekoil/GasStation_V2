@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.net.Socket;
 import java.util.LinkedList;
 
@@ -15,50 +16,61 @@ public class Client extends Thread{
 
 	private Socket socket = null;
 	private ObjectInputStream inputStream;
-	private ObjectOutput outputStream;
-	private LinkedList<ClientListener> listeners = new LinkedList<ClientListener>();
+	private ObjectOutputStream outputStream;
+	private LinkedList<ClientListener> listeners;
+	private boolean endOfConnection = false;
+	
+	public Client() {
+		listeners = new LinkedList<ClientListener>();
+	}
 	
 	public void run() {
 		try {
 			socket = new Socket("localhost", SERVER_PORT);
-			inputStream = new ObjectInputStream(socket.getInputStream()); 
 			outputStream = new ObjectOutputStream(socket.getOutputStream());
-		} catch (Exception e) {	System.err.println(e);
+			inputStream = new ObjectInputStream(socket.getInputStream());
+			for(ClientListener l : listeners)
+				l.updateConectionStatus(true);
+			Runnable runInput = new Runnable() {
+				@Override
+				public void run() {
+					carReceiver();
+				}
+			};
+			new Thread(runInput).start();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
 		} 
 	}
 	
 	public void sendCar(ClientCar car) {
 		try {
+			outputStream.reset();
 			outputStream.writeObject(car);
-			if(car.getId() > 0) {
-				carReceiver();
-			} else {
-				socket.close();
-			}
-
+			
 		} catch (IOException e) {
-			for(ClientListener l : listeners)
-				l.fireEndOfConection();
+			e.getMessage();
 		}
 	}
 	
-	public void carReceiver() {
-		ClientCar car;
-		try {
-			Object temp = inputStream.readObject();
-			if (temp == null) {
-				return;
-			} else if(temp instanceof ClientCar)  {
-				car =(ClientCar) temp;
+	private void carReceiver() {
+		while(!endOfConnection) {
+			try {
+				Object temp = inputStream.readObject();
+				if (temp == null) {
+					endOfConnection = true;
+				} else if(temp instanceof ClientCar)  {
+					ClientCar car =(ClientCar) temp;
+					System.out.println("Incoming info.");
+				}
+				else {
+					for(ClientListener l : listeners)
+						l.fireIlligalObject();
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				System.out.println(e.getMessage());
 			}
-			else {
-				for(ClientListener l : listeners)
-					l.fireIlligalObject();
-			}
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
 		}
-
 	}
 	
 	public void registerListener(ClientListener lis) {

@@ -21,13 +21,13 @@ public class ClientController implements ClientListener, RegisterUIListener,
 
 	public ClientController(Client client, AbstractCarsView carView,
 			AbstractRegisterView newCarView, AbstractConnectionView connectView) {
-		this.client = client;
-		this.client.registerListener(this);
 		this.carView = carView;
 		this.newCarView = newCarView;
 		this.newCarView.registeListener(this);
 		this.connectView = connectView;
 		this.connectView.registerListener(this);
+		this.client = client;
+		this.client.registerListener(this);
 	}
 
 	@Override
@@ -42,16 +42,17 @@ public class ClientController implements ClientListener, RegisterUIListener,
 	}
 
 	@Override
-	public void fireEndOfConection() {
-		connectView.setConnectionStatus(false);
+	public void updateConectionStatus(boolean status) {
+		connectView.setConnectionStatus(status);
 	}
 
 	@Override
 	public void setConnection(boolean onOff) {
 		if(!onOff) {
-			ClientCar car = new ClientCar(0, false, 0);
-			car.setId(-1);
-			client.sendCar(car);
+			client.endOfConection();
+		}
+		else {
+			client.start();
 		}
 	}
 

@@ -77,9 +77,10 @@ public class GasStationController implements MainFuelEventListener,
 					@Override
 					public void run() {
 						try {
-							ObjectInputStream input  = new ObjectInputStream(client.getInputStream());
 							ObjectOutputStream output = new ObjectOutputStream(client.getOutputStream());
-							Object carInput = input.readObject();
+							ObjectInputStream input  = new ObjectInputStream(client.getInputStream());
+							Object carInput;
+							carInput = input.readObject();
 							if(carInput instanceof ClientCar) {
 								// transform to server side Car object
 								ClientCar car = (ClientCar) carInput;
@@ -210,7 +211,7 @@ public class GasStationController implements MainFuelEventListener,
 			fuelView.setDisable();
 			carView.setDisable();
 		}
-
+		
 		serverRunning = false;
 	}
 
