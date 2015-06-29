@@ -2,6 +2,7 @@ package UI;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import DAL.Transaction;
 import Listeners.UIStatisticsListener;
@@ -89,7 +90,7 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 				LocalDate start = startDate.getValue();
 				LocalDate end = endDate.getValue();
 				boolean pump = byPumpCbx.isSelected();
-				Transaction history = listener.getHistory(start, end, pump);
+				Vector<Transaction> history = listener.getHistory(start, end, pump);
 			}
 		});
 		
