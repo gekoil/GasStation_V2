@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.Vector;
 
 public class DatabaseConnector {
@@ -70,10 +69,11 @@ public class DatabaseConnector {
     public Vector<?> getTransactions(LocalDate first, LocalDate last, boolean pump) {
         try {
             Connection connection = dataSource.getConnection();
+            System.out.println("111");
             Statement statement = connection.createStatement();
             Vector<Transaction> t = new Vector<>();
             
-            ResultSet set = statement.executeQuery("SELECT * FROM transactions WHERE TIME_STAMP > " + first + " AND TIME_STAMP < " + last);
+            ResultSet set = statement.executeQuery("SELECT * FROM transactions WHERE TIME_STAMP >= " + first + " AND TIME_STAMP <= " + last);
             while (set.next()) {
             	set.toString();
             }

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 public class GasStationController implements MainFuelEventListener,
 		UIFuelEventListener, StatisticEventListener, UIStatisticsListener,
@@ -279,7 +280,7 @@ public class GasStationController implements MainFuelEventListener,
 
 	@Override
 	public Transaction getHistory(LocalDate firstDate, LocalDate lastDate, boolean byPump) {
-		dbConnector.getTransactions(firstDate, lastDate, byPump);
+		Vector<?> trans = dbConnector.getTransactions(firstDate, lastDate, byPump);
 		return null;
 	}
 

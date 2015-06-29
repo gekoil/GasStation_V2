@@ -13,6 +13,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -32,6 +33,7 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 	private DatePicker endDate;
 	private Label fromLbl;
 	private Label untilLbl;
+	private CheckBox byPumpCbx;
 	
 	public UIStatistics() {
 		setOrientation(Orientation.VERTICAL);
@@ -46,15 +48,6 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 			@Override
 			public void handle(Event arg0) {
 				listener.getStatistics();
-			}
-		});
-		
-		historyBtn = new Button("Get history");
-		historyBtn.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-			
-			//Transaction trns = listener.getHistory(null, null, null);
 			}
 		});
 		
@@ -83,21 +76,24 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 		
 		statByDayBtn = new Button("Get info by date");
 		startDate = new DatePicker(LocalDate.now());
+		startDate.setMaxWidth(105);
 		fromLbl = new Label("From:");
 		endDate = new DatePicker(LocalDate.now());
+		endDate.setMaxWidth(105);
 		untilLbl = new Label("Until:");
-		
+		byPumpCbx = new CheckBox("By Pump");
 		statByDayBtn.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent arg0) {
 				LocalDate start = startDate.getValue();
 				LocalDate end = endDate.getValue();
-				listener.getHistory(start, end, true);
+				boolean pump = byPumpCbx.isSelected();
+				Transaction history = listener.getHistory(start, end, pump);
 			}
 		});
 		
-		dateHbx.getChildren().addAll(statByDayBtn, fromLbl, startDate, untilLbl, endDate);
+		dateHbx.getChildren().addAll(statByDayBtn, fromLbl, startDate, untilLbl, endDate, byPumpCbx);
 	}
 
 	@Override
