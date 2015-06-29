@@ -3,9 +3,8 @@ package Controller;
 import Annotations.DuringWash;
 import BL.Car;
 import BL.ClientCar;
-import BL.ClientsSoketInfo;
+import BL.ClientsSocketInfo;
 import BL.GasStation;
-import Client.Client;
 import DAL.DatabaseConnector;
 import DAL.Transaction;
 import Listeners.*;
@@ -16,8 +15,6 @@ import Views.StatisticsAbstractView;
 import com.sun.istack.internal.Nullable;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
@@ -43,7 +40,7 @@ public class GasStationController implements MainFuelEventListener,
 	private StatisticsAbstractView statisticView;
 	private CarCreatorAbstractView carView;
 
-	private HashMap<String, ClientsSoketInfo> clients;
+	private HashMap<String, ClientsSocketInfo> clients;
 
 	public GasStationController(GasStation gs, MainFuelAbstractView FuelView,
 			StatisticsAbstractView statisticView, CarCreatorAbstractView carView) {
@@ -80,7 +77,7 @@ public class GasStationController implements MainFuelEventListener,
 					@Override
 					public void run() {
 						try {
-							ClientsSoketInfo clientData = new ClientsSoketInfo(client);
+							ClientsSocketInfo clientData = new ClientsSocketInfo(client);
 							clients.put(clientData.getClientAddress(), clientData);
 							Object carInput;
 							do {
@@ -181,7 +178,7 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public Car createNewCar(int liters, boolean wash, int pump, @Nullable ClientsSoketInfo owner) {
+	public Car createNewCar(int liters, boolean wash, int pump, @Nullable ClientsSocketInfo owner) {
 		if(liters > gs.getMfpool().getMaxCapacity()) {
 			carView.updateErrorMessege("The amount fuel requested is to high!");
 			return null;
@@ -231,7 +228,7 @@ public class GasStationController implements MainFuelEventListener,
 	@Override
 	public void getFueled(Car c, Transaction t) {
 		if(c.getOwner() != null) {
-			ClientsSoketInfo carSocket = c.getOwner();
+			ClientsSocketInfo carSocket = c.getOwner();
 			if(!carSocket.getSocket().isClosed()) {
 				try {
 					ClientCar clCar = c.toClientCar();
@@ -248,7 +245,7 @@ public class GasStationController implements MainFuelEventListener,
 	@Override
 	public void getWashed(Car c, Transaction t) {
 		if(c.getOwner() != null) {
-			ClientsSoketInfo carSocket = c.getOwner();
+			ClientsSocketInfo carSocket = c.getOwner();
 			if(!carSocket.getSocket().isClosed()) {
 				try {
 					ClientCar clCar = c.toClientCar();
@@ -279,9 +276,10 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public Transaction getHistory(LocalDate firstDate, LocalDate lastDate, boolean byPump) {
-		Vector<?> trans = dbConnector.getTransactions(firstDate, lastDate, byPump);
-		return null;
+	public Vector<Transaction> getHistory(LocalDate firstDate, LocalDate lastDate, boolean byPump) {
+		Vector<Transaction> trans = dbConnector.getTransactions(firstDate, lastDate, byPump);
+
+		return trans;
 	}
 
 }

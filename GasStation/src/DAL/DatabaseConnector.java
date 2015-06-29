@@ -37,7 +37,7 @@ public class DatabaseConnector {
 
     private void setupDataSource() {
         dataSource = new MysqlDataSource();
-        dataSource.setURL("localhost");
+        dataSource.setURL("jdbc:mysql://localhost/my_db");
         dataSource.setPort(3306);
         dataSource.setDatabaseName("my_db");
         dataSource.setUser("root");
@@ -66,7 +66,7 @@ public class DatabaseConnector {
         }
     }
     
-    public Vector<?> getTransactions(LocalDate first, LocalDate last, boolean pump) {
+    public Vector<Transaction> getTransactions(LocalDate first, LocalDate last, boolean pump) {
         try {
             Connection connection = dataSource.getConnection();
             System.out.println("111");
@@ -74,6 +74,7 @@ public class DatabaseConnector {
             Vector<Transaction> t = new Vector<>();
             
             ResultSet set = statement.executeQuery("SELECT * FROM transactions WHERE TIME_STAMP >= " + first + " AND TIME_STAMP <= " + last);
+
             while (set.next()) {
             	set.toString();
             }

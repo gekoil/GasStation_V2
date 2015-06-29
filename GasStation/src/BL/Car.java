@@ -4,10 +4,6 @@ import UI.GasStationUI;
 import Annotations.DuringWash;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.Socket;
 import java.util.logging.FileHandler;
 
 // Car as a thread enters the GasStation, holds the locks (Pump/AutoClean/ManualClean)
@@ -21,7 +17,7 @@ public class Car implements Runnable {
 	private boolean fueledUp;
 	private boolean cleanedUp;
 	private FileHandler handler;
-	private ClientsSoketInfo owner;
+	private ClientsSocketInfo owner;
 
 	public Car(int id, boolean wantCleaning, int numOfLiters, int pumpNum, GasStation gs) {
 		this.id = id;
@@ -141,11 +137,11 @@ public class Car implements Runnable {
 				+ ", numOfLiters=" + numOfLiters + ", pumpNum=" + pumpNum + "]";
 	}
 
-	public ClientsSoketInfo getOwner() {
+	public ClientsSocketInfo getOwner() {
 		return owner;
 	}
 
-	public void setOwner(ClientsSoketInfo owner) {
+	public void setOwner(ClientsSocketInfo owner) {
 		this.owner = owner;
 	}
 
