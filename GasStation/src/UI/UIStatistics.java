@@ -1,6 +1,7 @@
 package UI;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -27,7 +28,6 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 	private TextArea stat;
 	private Button infoBtn;
 	private Button closeBtn;
-	private Button historyBtn;
 	private HBox dateHbx;
 	private Button statByDayBtn;
 	private DatePicker startDate;
@@ -87,10 +87,11 @@ public class UIStatistics extends FlowPane implements StatisticsAbstractView {
 			
 			@Override
 			public void handle(ActionEvent arg0) {
-				LocalDate start = startDate.getValue();
-				LocalDate end = endDate.getValue();
+				LocalDateTime start = startDate.getValue().atTime(00, 00, 00);
+				LocalDateTime end = endDate.getValue().atTime(23, 59, 59);
 				boolean pump = byPumpCbx.isSelected();
 				Vector<Transaction> history = listener.getHistory(start, end, pump);
+				setStatistics(history.toString());
 			}
 		});
 		

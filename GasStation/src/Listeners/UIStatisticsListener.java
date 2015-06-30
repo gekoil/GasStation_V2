@@ -2,11 +2,11 @@ package Listeners;
 
 import DAL.Transaction;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Vector;
 
 public interface UIStatisticsListener {
 	void getStatistics();
 	void closeGasStation();
-	Vector<Transaction> getHistory(LocalDate firstDate, LocalDate lastDate, boolean byPump);
+	Vector<Transaction> getHistory(LocalDateTime firstDate, LocalDateTime lastDate, boolean byPump);
 }

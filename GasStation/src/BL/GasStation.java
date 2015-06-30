@@ -8,7 +8,7 @@ import Listeners.StatisticEventListener;
 import UI.GasStationUI;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Observable;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -43,6 +43,7 @@ public class GasStation extends Observable {
 	private int numOfCarsInTheGasStationCurrently;
 	
 	public GasStation(int numOfPumps, double pricePerLiter, MainFuelPool mfpool, CleaningService cs) {
+		id = idCounter++;
 		this.fuelListeners = new Vector<>();
 		this.statisticsListeners = new Vector<>();
 		this.carsEventListeners = new Vector<>();
@@ -105,9 +106,9 @@ public class GasStation extends Observable {
 		// fueling up by the chosen pump
 		Transaction trans = new Transaction();
 		trans.gasStation = getId();
-		trans.pump = car.getPumpNum()-1;
+		trans.pump = car.getPumpNum();
 		trans.amount = car.getNumOfLiters() * pricePerLiter;
-		trans.timeStamp = LocalDate.now();
+		trans.timeStamp = LocalDateTime.now();
 		trans.type = ServiceType.FUEL;
 		
 		pumps[car.getPumpNum()-1].pumpFuelUp(car, mfpool, this);
@@ -139,7 +140,7 @@ public class GasStation extends Observable {
 		Transaction trans = new Transaction();
 		trans.gasStation = getId();
 		trans.amount = cs.getPrice();
-		trans.timeStamp = LocalDate.now();
+		trans.timeStamp = LocalDateTime.now();
 		trans.type = ServiceType.CLEANING;
 		fireCarWashedEvent(car, trans);
 	} // cleanCar

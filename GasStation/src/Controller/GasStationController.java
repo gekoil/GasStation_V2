@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -56,6 +57,7 @@ public class GasStationController implements MainFuelEventListener,
 		this.carView.registerListener(this);
 
 		dbConnector = DatabaseConnector.getInstance();
+		dbConnector.checkGasStation(gs);
 
 		clients = new HashMap<>();
 
@@ -227,6 +229,7 @@ public class GasStationController implements MainFuelEventListener,
 
 	@Override
 	public void getFueled(Car c, Transaction t) {
+		dbConnector.storeTransaction(t);
 		if(c.getOwner() != null) {
 			ClientsSocketInfo carSocket = c.getOwner();
 			if(!carSocket.getSocket().isClosed()) {
@@ -234,7 +237,6 @@ public class GasStationController implements MainFuelEventListener,
 					ClientCar clCar = c.toClientCar();
 					clCar.setStatus("Fueled");
 					carSocket.getOutputStream().writeObject(clCar);
-					//dbConnector.storeTransaction(t);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -244,6 +246,8 @@ public class GasStationController implements MainFuelEventListener,
 
 	@Override
 	public void getWashed(Car c, Transaction t) {
+		if(t != null)
+			dbConnector.storeTransaction(t);
 		if(c.getOwner() != null) {
 			ClientsSocketInfo carSocket = c.getOwner();
 			if(!carSocket.getSocket().isClosed()) {
@@ -256,7 +260,6 @@ public class GasStationController implements MainFuelEventListener,
 					} else
 						clCar.setStatus("Fueled");
 					carSocket.getOutputStream().writeObject(clCar);
-					//dbConnector.storeTransaction(t);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -276,9 +279,8 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public Vector<Transaction> getHistory(LocalDate firstDate, LocalDate lastDate, boolean byPump) {
+	public Vector<Transaction> getHistory(LocalDateTime firstDate, LocalDateTime lastDate, boolean byPump) {
 		Vector<Transaction> trans = dbConnector.getTransactions(firstDate, lastDate, byPump);
-
 		return trans;
 	}
 

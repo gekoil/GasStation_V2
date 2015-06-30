@@ -57,7 +57,7 @@ public class Car implements Runnable {
 				GasStationUI.showStatistics(gs, gs);
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
 	}
 	
