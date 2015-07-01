@@ -279,8 +279,8 @@ public class GasStationController implements MainFuelEventListener,
 	}
 
 	@Override
-	public Vector<Transaction> getHistory(LocalDateTime firstDate, LocalDateTime lastDate, boolean byPump) {
-		Vector<Transaction> trans = dbConnector.getTransactions(firstDate, lastDate, byPump);
+	public Vector<Transaction> getHistory(LocalDateTime firstDate, LocalDateTime lastDate, int option) {
+		Vector<Transaction> trans = dbConnector.getTransactions(firstDate, lastDate, option);
 		return trans;
 	}
 

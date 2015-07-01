@@ -12,4 +12,5 @@ public class Transaction implements Serializable {
     public double      amount;
     public LocalDateTime   timeStamp;
     public ServiceType type;
+    
 }

@@ -22,6 +22,11 @@ public class DatabaseConnector {
 	private static DatabaseConnector instance;
 	private MysqlDataSource dataSource;
 
+	private DateTimeFormatter dateFormat = DateTimeFormatter
+			.ofPattern("yyyyMMdd");
+	private DateTimeFormatter timeFormat = DateTimeFormatter
+			.ofPattern("HHmmss");
+
 	// database connection should be a singleton
 	private DatabaseConnector() {
 		defineDriver();
@@ -99,19 +104,19 @@ public class DatabaseConnector {
 			Connection connection = dataSource.getConnection();
 			Statement statement = connection.createStatement();
 			String query;
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern("yyyyMMddHHmmss");
 			if (transaction.type == ServiceType.FUEL) {
 				query = String
-						.format("INSERT INTO transactions (STATION_ID, AMOUNT, TIME_STAMP, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s,%s, %s)",
+						.format("INSERT INTO transactions (STATION_ID, AMOUNT, DATE, TIME, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s, %s,%s, %s)",
 								transaction.gasStation, transaction.amount,
-								format.format(transaction.timeStamp),
+								dateFormat.format(transaction.timeStamp),
+								timeFormat.format(transaction.timeStamp),
 								transaction.type.ordinal(), transaction.pump);
 			} else { // cleaning service
 				query = String
-						.format("INSERT INTO transactions (STATION_ID, AMOUNT, TIME_STAMP, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s, %s, %s)",
+						.format("INSERT INTO transactions (STATION_ID, AMOUNT, DATE, TIME, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s, %s,%s, %s)",
 								transaction.gasStation, transaction.amount,
-								format.format(transaction.timeStamp),
+								dateFormat.format(transaction.timeStamp),
+								timeFormat.format(transaction.timeStamp),
 								transaction.type.ordinal(), "Null");
 			}
 			int rowCount = statement.executeUpdate(query);
@@ -124,27 +129,23 @@ public class DatabaseConnector {
 		}
 	}
 
-	public Vector<Transaction> getTransactions(LocalDateTime first, LocalDateTime last,
-			boolean pump) {
+	public Vector<Transaction> getTransactions(LocalDateTime first,
+			LocalDateTime last, int option) {
 		try {
 			Connection connection = dataSource.getConnection();
 			Statement statement = connection.createStatement();
-			DateTimeFormatter format = DateTimeFormatter
-					.ofPattern("yyyyMMddHHmmss");
-			Vector<Transaction> trans = new Vector<>();
-			ResultSet res = statement
-					.executeQuery("SELECT * FROM transactions WHERE TIME_STAMP >= "
-							+ format.format(first)
-							+ " AND TIME_STAMP <= "
-							+ format.format(last));
+
+			Vector<Transaction> trans = new Vector<Transaction>();
+			ResultSet res;
+			res = statement.executeQuery(setQuery(first, last, option));
 			while (res.next()) {
 				Transaction tr = new Transaction();
-				tr.gasStation = res.getInt("STATION_ID");
-				tr.amount = res.getDouble("AMOUNT");
+				tr.amount = res.getDouble("SUM");
 				tr.pump = res.getInt("PUMP");
-				Timestamp time = res.getTimestamp("TIME_STAMP");
-				tr.timeStamp = time.toLocalDateTime();
-				tr.type = ServiceType.FUEL;
+				tr.timeStamp = LocalDateTime.of(res.getDate("DATE")
+						.toLocalDate(), res.getTime("TIME").toLocalTime());
+				tr.type = (res.getInt("SERVICE_TYPE") == 0 ? ServiceType.FUEL
+						: ServiceType.CLEANING);
 				trans.add(tr);
 			}
 			res.close();
@@ -155,5 +156,28 @@ public class DatabaseConnector {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private String setQuery(LocalDateTime first, LocalDateTime last, int option) {
+		String select = "SELECT DATE, TIME, PUMP, SERVICE_TYPE, SUM(AMOUNT) AS 'SUM' FROM transactions ";
+		switch (option) {
+		case 1:
+			select += "WHERE TIME BETWEEN " + timeFormat.format(first)
+					+ " AND " + timeFormat.format(last) + " AND DATE BETWEEN "
+					+ dateFormat.format(first) + " AND "
+					+ dateFormat.format(last) + " GROUP BY PUMP";
+			break;
+		case 2:
+			select += "WHERE DATE BETWEEN " + dateFormat.format(first)
+					+ " AND " + dateFormat.format(last) + " GROUP BY PUMP";
+			break;
+		case 3:
+			select += "WHERE DATE BETWEEN " + dateFormat.format(first)
+					+ " AND " + dateFormat.format(last) + " GROUP BY DATE";
+			break;
+		default:
+			select = "";
+		}
+		return select;
 	}
 }
