@@ -47,7 +47,8 @@ public class ManualClean extends ReentrantLock {
 			Thread.sleep(cleanTime);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} finally {
+			unlock();	
 		}
-		unlock();
 	}  // manualClean
 }

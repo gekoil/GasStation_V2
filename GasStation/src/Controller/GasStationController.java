@@ -19,6 +19,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ public class GasStationController implements MainFuelEventListener,
 	private MainFuelAbstractView fuelView;
 	private StatisticsAbstractView statisticView;
 	private CarCreatorAbstractView carView;
+	private ServerSocket listener;
 
 	private HashMap<String, ClientsSocketInfo> clients;
 
@@ -72,9 +75,11 @@ public class GasStationController implements MainFuelEventListener,
 
 	private void initServer() {
 		try {
-			ServerSocket listener = new ServerSocket(SERVER_PORT);
+			listener = new ServerSocket(SERVER_PORT);
+			listener.setSoTimeout(10000);
 			while (serverRunning) {
-				final Socket client = listener.accept();
+				try {
+					final Socket client = listener.accept();
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -99,9 +104,11 @@ public class GasStationController implements MainFuelEventListener,
 						}
 					}
 				}).start();
+				} catch (SocketTimeoutException e) {
+					continue;
+				}
 			}
 			listener.close();
-
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -213,18 +220,11 @@ public class GasStationController implements MainFuelEventListener,
 	public void closeGasStation() {
 		gs.closeGasStation();
 		if(gs.isGasStationClosing()) {
-			ShowStatistics("Start closing operation...\nPlease wait for \"end of day\" statistics.");
 			statisticView.setDisable();
 			fuelView.setDisable();
 			carView.setDisable();
+			serverRunning = false;
 		}
-		
-		serverRunning = false;
-	}
-
-	@Override
-	public void fireCantCloseWhileFilling() {
-		statisticView.setStatistics("The gas station can't be closed\nwhile filling the main fuel pool.");
 	}
 
 	@Override

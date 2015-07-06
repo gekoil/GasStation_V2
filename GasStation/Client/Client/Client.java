@@ -67,7 +67,7 @@ public class Client extends Thread{
 						l.fireIlligalObject();
 				}
 			} catch (ClassNotFoundException | IOException e) {
-				System.out.println(e.getMessage());
+				endOfConection();
 			}
 		}
 	}

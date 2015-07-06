@@ -1,7 +1,10 @@
 package UI;
 
+import java.util.Vector;
 import java.util.logging.Level;
 
+import Listeners.StatisticEventListener;
+import Views.StatisticsAbstractView;
 import BL.Car;
 import BL.GasStation;
 
@@ -51,19 +54,25 @@ public class GasStationUI {
 		GasStation.getLog().log(Level.INFO, "Car #" + car.getID() + " is leaving the gas station!", param);
 	} 
 	
-	public static void statWillBeShown(Object param) {
+	public static void statWillBeShown(Object param, Vector<StatisticEventListener> sl) {
 		//System.out.println("The statistics will be shown after the last car leaves the gas station");
 		GasStation.getLog().log(Level.INFO, "The statistics will be shown after the last car leaves the gas station", param);
+		for(StatisticEventListener l : sl)
+			l.ShowStatistics("The statistics will be shown after the last car leaves the gas station");
 	} 
 	
 	public static void showStatistics(GasStation gs, Object param) {
 		//System.out.println(gs.getStatistics().toString());
 		GasStation.getLog().log(Level.INFO, gs.getStatistics().toString(), param);
+		for(StatisticEventListener l : gs.getStatisticsListeners())
+			l.ShowStatistics(gs.getStatistics().toString());
 	} 
 	
-	public static void cantCloseWhileFillingMainPool(Object param) {
+	public static void cantCloseWhileFillingMainPool(Object param, Vector<StatisticEventListener> sl) {
 		//System.out.println("The gas station can't be closed while filling the main fuel pool.");
 		GasStation.getLog().log(Level.INFO, "The gas station can't be closed while filling the main fuel pool. Try again later", param);
+		for(StatisticEventListener l : sl)
+			l.ShowStatistics("The gas station can't be closed while filling the main fuel pool.");
 	} 
 	
 	public static void mainFuelPoolIsFull(Object param) {

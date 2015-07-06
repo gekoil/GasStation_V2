@@ -173,8 +173,7 @@ public class GasStation extends Observable {
 	public void closeGasStation() {
 		// can't close the gas station while filling up the main fuel pool
 		if (isFillingMainFuelPool) {
-			GasStationUI.cantCloseWhileFillingMainPool(this);
-			fireCantCloseWhileFilling();
+			GasStationUI.cantCloseWhileFillingMainPool(this, statisticsListeners);
 			return;
 		}
 		gasStationClosing = true;
@@ -182,10 +181,9 @@ public class GasStation extends Observable {
 		gasStationQueue.shutdown();
 		GasStationUI.closeGasStation(this);
 		if (numOfCarsInTheGasStationCurrently > 0)
-		    GasStationUI.statWillBeShown(this);
+		    GasStationUI.statWillBeShown(this, statisticsListeners);
 		else {
 		    GasStationUI.showStatistics(this, this);
-		    updateStatistics();
 		}
 	}  // closeGasStation
 	
@@ -284,6 +282,31 @@ public class GasStation extends Observable {
 				+ pricePerLiter + ", mfpool=" + mfpool + ", cs=" + cs + "]";
 	}
 	
+	public Vector<MainFuelEventListener> getFuelListeners() {
+		return fuelListeners;
+	}
+
+	public void setFuelListeners(Vector<MainFuelEventListener> fuelListeners) {
+		this.fuelListeners = fuelListeners;
+	}
+
+	public Vector<StatisticEventListener> getStatisticsListeners() {
+		return statisticsListeners;
+	}
+
+	public void setStatisticsListeners(
+			Vector<StatisticEventListener> statisticsListeners) {
+		this.statisticsListeners = statisticsListeners;
+	}
+
+	public Vector<CarsEventListener> getCarsEventListeners() {
+		return carsEventListeners;
+	}
+
+	public void setCarsEventListeners(Vector<CarsEventListener> carsEventListeners) {
+		this.carsEventListeners = carsEventListeners;
+	}
+
 	public void addFuelPoolListener(MainFuelEventListener lis) {
 		fuelListeners.add(lis);
 	}
@@ -319,11 +342,6 @@ public class GasStation extends Observable {
 	protected void fireTheMainFuelPoolCapacity() {
 		for(MainFuelEventListener l : fuelListeners)
 			l.fireTheCurrentCapacity(mfpool.getCurrentCapacity());
-	}
-	
-	protected void fireCantCloseWhileFilling() {
-		for(MainFuelEventListener l : fuelListeners)
-			l.fireCantCloseWhileFilling();
 	}
 	
 	protected void updateStatistics() {

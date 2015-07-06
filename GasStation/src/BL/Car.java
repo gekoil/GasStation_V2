@@ -27,7 +27,7 @@ public class Car implements Runnable {
 		this.gs = gs;
 		fueledUp = false;
 		cleanedUp = false;
-
+		
 		try {
 			this.handler = new FileHandler("Car_ID"+this.id+" Log.txt");
 			this.handler.setFormatter(new MyFormat());
@@ -45,6 +45,10 @@ public class Car implements Runnable {
 					gs.fuelUp(this);
 				if (!cleanedUp && wantCleaning)
 					gs.cleanCar(this);
+				if(!wantCleaning && (fueledUp || numOfLiters == 0))
+					break;
+				if(numOfLiters == 0 && cleanedUp)
+					break;
 			}
 			// if the gas station is closing and haven't fueled up yet, go to fuel up!!!
 			while (!fueledUp && numOfLiters > 0) {
