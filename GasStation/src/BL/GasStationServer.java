@@ -65,8 +65,10 @@ public class GasStationServer extends Application implements EventHandler<Window
 
 	@Override
 	public void handle(WindowEvent arg0) {
-		if(!gs.isGasStationClosing())
+		if(!gs.isGasStationClosing()) {
 			arg0.consume();
+			stat.setStatistics("For exit, first close the Gas Station.");
+		}
 	}
 
 }
