@@ -2,18 +2,13 @@ package DAL;
 
 import BL.GasStation;
 import BL.Pump;
-
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
@@ -106,14 +101,14 @@ public class DatabaseConnector {
 			String query;
 			if (transaction.type == ServiceType.FUEL) {
 				query = String
-						.format("INSERT INTO transactions (STATION_ID, AMOUNT, DATE, TIME, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s, %s,%s, %s)",
+						.format("INSERT INTO transactions (STATION_ID, AMOUNT, DATE_ADDED, TIME_ADDED, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s, %s,%s, %s)",
 								transaction.gasStation, transaction.amount,
 								dateFormat.format(transaction.timeStamp),
 								timeFormat.format(transaction.timeStamp),
 								transaction.type.ordinal(), transaction.pump);
 			} else { // cleaning service
 				query = String
-						.format("INSERT INTO transactions (STATION_ID, AMOUNT, DATE, TIME, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s, %s,%s, %s)",
+						.format("INSERT INTO transactions (STATION_ID, AMOUNT, DATE_ADDED, TIME_ADDED, SERVICE_TYPE, PUMP) VALUES (%s, %s, %s, %s,%s, %s)",
 								transaction.gasStation, transaction.amount,
 								dateFormat.format(transaction.timeStamp),
 								timeFormat.format(transaction.timeStamp),
@@ -159,21 +154,21 @@ public class DatabaseConnector {
 	}
 
 	private String setQuery(LocalDateTime first, LocalDateTime last, int option) {
-		String select = "SELECT DATE, TIME, PUMP, SERVICE_TYPE, SUM(AMOUNT) AS 'SUM' FROM transactions ";
+		String select = "SELECT DATE_ADDED, TIME_ADDED, PUMP, SERVICE_TYPE, SUM(AMOUNT) AS 'SUM' FROM transactions ";
 		switch (option) {
 		case 1:
-			select += "WHERE TIME BETWEEN " + timeFormat.format(first)
-					+ " AND " + timeFormat.format(last) + " AND DATE BETWEEN "
+			select += "WHERE TIME_ADDED BETWEEN " + timeFormat.format(first)
+					+ " AND " + timeFormat.format(last) + " AND DATE_ADDED BETWEEN "
 					+ dateFormat.format(first) + " AND "
 					+ dateFormat.format(last) + " GROUP BY PUMP";
 			break;
 		case 2:
-			select += "WHERE DATE BETWEEN " + dateFormat.format(first)
+			select += "WHERE DATE_ADDED BETWEEN " + dateFormat.format(first)
 					+ " AND " + dateFormat.format(last) + " GROUP BY PUMP";
 			break;
 		case 3:
-			select += "WHERE DATE BETWEEN " + dateFormat.format(first)
-					+ " AND " + dateFormat.format(last) + " GROUP BY DATE";
+			select += "WHERE DATE_ADDED BETWEEN " + dateFormat.format(first)
+					+ " AND " + dateFormat.format(last) + " GROUP BY DATE_ADDED";
 			break;
 		default:
 			select = "";
